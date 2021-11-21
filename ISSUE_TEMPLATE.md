@@ -28,7 +28,7 @@ ISSUES MISSING IMPORTANT INFORMATION MAY BE CLOSED WITHOUT INVESTIGATION.
 ## Minimal reproduction of the problem with instructions
 
 For bug reports please provide the _STEPS TO REPRODUCE_ and if possible a _MINIMAL DEMO_ of the problem via
-https://stackblitz.com or similar. You can use this template as a starting point: https://stackblitz.com/edit/ngrx-store-formsync
+https://stackblitz.com or similar.
 
 ## What is the motivation / use case for changing the behavior?
 
@@ -38,8 +38,7 @@ https://stackblitz.com or similar. You can use this template as a starting point
 
 <pre>
 <code>
-@angular/core version: X.Y.Z
-@ngx-translate/core version: X.Y.Z
+@ngrx/store version: X.Y.Z
 
 Browser:
 - [ ] Chrome (desktop) version XX
