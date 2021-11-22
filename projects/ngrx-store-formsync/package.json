@@ -1,19 +1,21 @@
 {
   "name": "@larscom/ngrx-store-formsync",
-  "version": "3.0.1",
-  "description": "Highly configurable and flexible translations loader for ngx-translate. Fetch multiple translations, each translation file gets it's own namespace by default",
+  "version": "0.0.0",
+  "description": "",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/larscom/ngrx-store-formsync"
   },
   "keywords": [
     "angular",
-    "ngx-translate",
-    "translate",
+    "ngrx",
+    "redux",
+    "store",
+    "state",
+    "storage",
     "rxjs",
-    "module",
-    "http",
-    "i18n"
+    "reactive-forms",
+    "forms"
   ],
   "author": "Lars Kniep",
   "license": "MIT",
@@ -22,14 +24,9 @@
   },
   "homepage": "https://github.com/larscom/ngrx-store-formsync#readme",
   "peerDependencies": {
-    "@angular/core": ">=6.0.0",
-    "@angular/common": ">=6.0.0",
-    "@ngx-translate/core": ">=10.0.0",
-    "rxjs": ">=6.0.0"
-  },
-  "dependencies": {
-    "deepmerge": ">=3.0.0",
-    "tslib": "^2.0.0"
+    "@angular/core": ">=8.0.0",
+    "@angular/common": ">=8.0.0",
+    "@ngrx/store": ">=8.0.0"
   },
   "publishConfig": {
     "access": "public"

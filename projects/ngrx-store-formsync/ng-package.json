@@ -3,6 +3,5 @@
   "dest": "../../dist/ngrx-store-formsync",
   "lib": {
     "entryFile": "src/public_api.ts"
-  },
-  "allowedNonPeerDependencies": ["deepmerge"]
+  }
 }

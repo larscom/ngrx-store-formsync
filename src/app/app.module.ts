@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
-import { HttpClientModule } from '@angular/common/http';
+import { StoreModule } from 'src/store/store.module';
 
 @NgModule({
-  imports: [BrowserModule, HttpClientModule],
-
+  imports: [BrowserModule, ReactiveFormsModule, StoreModule],
   declarations: [AppComponent],
   bootstrap: [AppComponent]
 })
