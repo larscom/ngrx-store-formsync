@@ -1,6 +1,8 @@
-export { FormSyncModule } from './lib/form-sync.module';
-export { IFormSyncConfig } from './lib/models/form-sync-config';
+export { StoreFormSyncDirective } from './lib/directives/store-form-sync.directive';
+export { StoreFormSyncConfig } from './lib/models/store-form-sync-config';
+export { StoreFormSyncModule } from './lib/store-form-sync.module';
+export { StoreFormSyncState } from './lib/store/form.reducer';
+export { storeFormSyncKey } from './lib/store/form.constants';
 
-export { formSyncStoreKey } from './lib/store/form.constants';
-
-export * as formActions from './lib/store/form.actions';
+export * as formSyncActions from './lib/store/form.actions';
+export * as formSyncSelectors from './lib/store/form.selectors';

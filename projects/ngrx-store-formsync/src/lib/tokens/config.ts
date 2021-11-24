@@ -1,4 +1,4 @@
 import { InjectionToken } from '@angular/core';
-import { IFormSyncConfig } from '../models/form-sync-config';
+import { StoreFormSyncConfig } from '../models/store-form-sync-config';
 
-export const formSyncConfigToken = new InjectionToken<IFormSyncConfig>('formSyncConfigToken');
+export const storeFormSyncConfigToken = new InjectionToken<StoreFormSyncConfig>('storeFormSyncConfigToken');

@@ -1,1 +1,1 @@
-export const formSyncStoreKey = 'formSync';
+export const storeFormSyncKey = 'storeFormSync';

@@ -1,91 +1,95 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { formSyncActions } from '@larscom/ngrx-store-formsync';
 import { Store } from '@ngrx/store';
 import { IRootState } from 'src/store/models/root-state';
-import { formActions } from '@larscom/ngrx-store-formsync';
 
 @Component({
   selector: 'app-root',
   template: `
-    <button (click)="reset()">Reset</button>
-    <form [formGroup]="form" formGroupId="complexId">
-      <input type="text" formControlName="lessoncode" />
-      <input type="text" formControlName="countrycode" />
-      <input type="text" formControlName="languagecode" />
-
-      <div formArrayName="tasks">
-        <div *ngFor="let task of tasks; let taskIndex = index">
-          <h1>Tasks</h1>
-          <div [formGroupName]="taskIndex">
-            <input formControlName="taskid" />
-            <input formControlName="taskname" />
-            <div formArrayName="groups">
-              <div *ngFor="let group of getGroupsFor(taskIndex); let groupIndex = index">
-                <h2>Group</h2>
-                <div [formGroupName]="groupIndex">
-                  <input formControlName="id" />
-                  <input formControlName="name" />
-                  <div formArrayName="attributes">
-                    <div *ngFor="let attribute of getAttributesFor(taskIndex, groupIndex); let attributeIndex = index">
-                      <h3>Attribute</h3>
-                      <div [formGroupName]="attributeIndex">
-                        <input formControlName="name" />
-                        <input formControlName="contentid" />
-                        <input formControlName="value" />
-                        <input formControlName="translationvalue" />
-                        <input formControlName="placeholder" />
-                        <input formControlName="label" />
-                        <input formControlName="defaultvalue" />
-                        <input formControlName="type" />
-                        <input formControlName="element" />
-                        <input formControlName="altered" />
-                        <input formControlName="translation_id" />
-                        <input formControlName="isnew" />
+    <div class="container-fluid">
+      <form [formGroup]="form" storeFormSync [storeFormSyncId]="storeFormSyncId">
+        <input type="text" formControlName="lessoncode" />
+        <input type="text" formControlName="countrycode" />
+        <input type="text" formControlName="languagecode" />
+        <div formArrayName="tasks">
+          <div *ngFor="let task of tasks; let taskIndex = index">
+            <h1>Tasks</h1>
+            <div [formGroupName]="taskIndex">
+              <input formControlName="taskid" />
+              <input formControlName="taskname" />
+              <div formArrayName="groups">
+                <div *ngFor="let group of getGroupsFor(taskIndex); let groupIndex = index">
+                  <h2>Group</h2>
+                  <div [formGroupName]="groupIndex">
+                    <input formControlName="id" />
+                    <input formControlName="name" />
+                    <div formArrayName="attributes">
+                      <div
+                        *ngFor="let attribute of getAttributesFor(taskIndex, groupIndex); let attributeIndex = index"
+                      >
+                        <h3>Attribute</h3>
+                        <div [formGroupName]="attributeIndex">
+                          <input formControlName="name" />
+                          <input formControlName="contentid" />
+                          <input formControlName="value" />
+                          <input formControlName="translationvalue" />
+                          <input formControlName="placeholder" />
+                          <input formControlName="label" />
+                          <input formControlName="defaultvalue" />
+                          <input formControlName="type" />
+                          <input formControlName="element" />
+                          <input formControlName="altered" />
+                          <input formControlName="translation_id" />
+                          <input formControlName="isnew" />
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-
-            <div formArrayName="dictionary">
-              <div *ngFor="let dict of getDictionaryFor(taskIndex); let dictIndex = index">
-                <h2>Dictionary</h2>
-                <div [formGroupName]="dictIndex">
-                  <input formControlName="content_id" />
-                  <input formControlName="term" />
-                  <input formControlName="translation_id" />
-                  <input formControlName="value" />
-                  <input formControlName="task_id" />
-                  <input formControlName="task_dictionary_id" />
-                  <input formControlName="isnew" />
-                  <input formControlName="altered" />
+              <div formArrayName="dictionary">
+                <div *ngFor="let dict of getDictionaryFor(taskIndex); let dictIndex = index">
+                  <h2>Dictionary</h2>
+                  <div [formGroupName]="dictIndex">
+                    <input formControlName="content_id" />
+                    <input formControlName="term" />
+                    <input formControlName="translation_id" />
+                    <input formControlName="value" />
+                    <input formControlName="task_id" />
+                    <input formControlName="task_dictionary_id" />
+                    <input formControlName="isnew" />
+                    <input formControlName="altered" />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </form>
+      </form>
+      <button class="btn btn-primary" (click)="reset()">Reset</button>
+    </div>
   `
 })
 export class AppComponent implements OnInit {
   form: FormGroup;
   initialFormValue: any;
 
-  get tasks() {
+  readonly storeFormSyncId = '1';
+
+  get tasks(): AbstractControl[] {
     return (<FormArray>this.form.get('tasks')).controls;
   }
 
-  getGroupsFor(index: number) {
+  getGroupsFor(index: number): AbstractControl[] {
     return (<FormArray>(<FormArray>this.form.get('tasks')).controls[index].get('groups')).controls;
   }
 
-  getDictionaryFor(index: number) {
+  getDictionaryFor(index: number): AbstractControl[] {
     return (<FormArray>(<FormArray>this.form.get('tasks')).controls[index].get('dictionary')).controls;
   }
 
-  getAttributesFor(taskIndex: number, groupIndex: number) {
+  getAttributesFor(taskIndex: number, groupIndex: number): AbstractControl[] {
     return (<FormArray>(
       (<FormArray>(<FormArray>this.form.get('tasks')).controls[taskIndex].get('groups')).controls[groupIndex].get(
         'attributes'
@@ -95,22 +99,23 @@ export class AppComponent implements OnInit {
 
   constructor(private readonly builder: FormBuilder, private readonly store: Store<IRootState>) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.form = this.builder.group({
       lessoncode: 'TMM',
       countrycode: 'CA',
       languagecode: 'en',
       tasks: this.builder.array(this.getTasks())
     });
+
     this.initialFormValue = this.form.value;
-    this.store.dispatch(formActions.setForm({ id: 'complexId', value: this.form.value }));
   }
 
   reset(): void {
-    this.store.dispatch(formActions.setForm({ id: 'complexId', value: this.initialFormValue }));
+    const { storeFormSyncId, initialFormValue: value } = this;
+    this.store.dispatch(formSyncActions.setForm({ storeFormSyncId, value }));
   }
 
-  getTasks() {
+  getTasks(): FormGroup[] {
     return this.taskData().map((task) =>
       this.builder.group({
         taskid: task.taskid,
@@ -121,7 +126,7 @@ export class AppComponent implements OnInit {
     );
   }
 
-  getDictionaries(dictionaries: any[]) {
+  getDictionaries(dictionaries: any[]): FormGroup[] {
     return dictionaries.map((dictionary) =>
       this.builder.group({
         content_id: dictionary.content_id,
@@ -136,7 +141,7 @@ export class AppComponent implements OnInit {
     );
   }
 
-  getGroups(groups: any[]) {
+  getGroups(groups: any[]): FormGroup[] {
     return groups.map((group) =>
       this.builder.group({
         id: group.id,
@@ -146,7 +151,7 @@ export class AppComponent implements OnInit {
     );
   }
 
-  getAttributes(attributes: any[]) {
+  getAttributes(attributes: any[]): FormGroup[] {
     return attributes.map((attribute) =>
       this.builder.group({
         name: attribute.name,
@@ -165,7 +170,7 @@ export class AppComponent implements OnInit {
     );
   }
 
-  taskData() {
+  taskData(): any[] {
     return [
       {
         taskid: 31,

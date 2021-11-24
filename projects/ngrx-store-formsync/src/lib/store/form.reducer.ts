@@ -1,22 +1,25 @@
 import { createReducer, on } from '@ngrx/store';
 import * as formActions from './form.actions';
 
-export interface IFormSyncState {
-  [formGroupId: string]: any;
+export interface StoreFormSyncState {
+  [storeFormSyncId: string]: any;
 }
 
-export const formSyncReducer = createReducer(
+export const storeFormSyncReducer = createReducer(
   {},
   /**
    * Set form value from payload
    */
-  on(formActions.setForm, (state, { id, value }) => ({ ...state, [id]: value })),
+  on(formActions.setForm, (state, { storeFormSyncId, value }) => ({ ...state, [storeFormSyncId]: value })),
   /**
    * Patch form value from payload
    */
-  on(formActions.patchForm, (state, { id, value }) => ({ ...{ ...state }, ...{ [id]: value } })),
+  on(formActions.patchForm, (state, { storeFormSyncId, value }) => ({
+    ...{ ...state },
+    ...{ [storeFormSyncId]: value }
+  })),
   /**
    * Remove form value from state
    */
-  on(formActions.deleteForm, (state, { id }) => ({ ...state, [id]: undefined }))
+  on(formActions.deleteForm, (state, { storeFormSyncId }) => ({ ...state, [storeFormSyncId]: undefined }))
 );

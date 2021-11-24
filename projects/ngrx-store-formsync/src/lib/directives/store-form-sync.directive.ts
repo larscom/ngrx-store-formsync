@@ -3,35 +3,38 @@ import { FormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-import { IFormSyncConfig } from '../models/form-sync-config';
+import { StoreFormSyncConfig } from '../models/store-form-sync-config';
 import { patchForm } from '../store/form.actions';
 import * as formSelectors from '../store/form.selectors';
-import { formSyncConfigToken } from '../tokens/config';
+import { storeFormSyncConfigToken } from '../tokens/config';
 
 @Directive({
-  selector: '[formGroup]'
+  selector: '[storeFormSync]'
 })
-export class FormGroupDirective implements OnInit, OnDestroy {
+export class StoreFormSyncDirective implements OnInit, OnDestroy {
   @Input() formGroup: FormGroup;
-  @Input() formGroupId: string;
-  @Input() formGroupSync = true;
+
+  @Input() storeFormSyncId: string;
+  @Input() storeFormSyncDisabled: boolean;
 
   constructor(
-    @Inject(formSyncConfigToken) private readonly config: IFormSyncConfig,
-    private readonly store: Store<any>
+    @Inject(storeFormSyncConfigToken) private readonly config: StoreFormSyncConfig,
+    private readonly store: Store
   ) {}
 
   private readonly destroy$ = new Subject<void>();
 
   ngOnInit(): void {
-    if (!this.formGroupId) {
+    const { storeFormSyncId } = this;
+
+    if (!storeFormSyncId) {
       return;
     }
 
     this.formGroup.valueChanges
       .pipe(
         takeUntil(this.destroy$),
-        filter(() => this.formGroupSync),
+        filter(() => !this.storeFormSyncDisabled),
         filter(() => !(this.config.syncValidOnly && !this.formGroup.valid)),
         filter(() => !this.config.syncOnSubmit)
       )
@@ -40,8 +43,8 @@ export class FormGroupDirective implements OnInit, OnDestroy {
     this.store
       .pipe(
         takeUntil(this.destroy$),
-        filter(() => this.formGroupSync),
-        select(formSelectors.selectFormValue({ id: this.formGroupId })),
+        filter(() => !this.storeFormSyncDisabled),
+        select(formSelectors.selectFormValue({ storeFormSyncId })),
         filter((value) => !!value)
       )
       .subscribe((value) => this.formGroup.patchValue(value, { emitEvent: false }));
@@ -54,7 +57,7 @@ export class FormGroupDirective implements OnInit, OnDestroy {
 
   @HostListener('submit')
   onSubmit(): void {
-    if (!this.formGroupId || !this.formGroupSync) {
+    if (!this.storeFormSyncId || this.storeFormSyncDisabled) {
       return;
     }
 
@@ -70,7 +73,8 @@ export class FormGroupDirective implements OnInit, OnDestroy {
   }
 
   private dispatch(syncRawValue: boolean): void {
-    const value = syncRawValue ? this.formGroup.getRawValue() : this.formGroup.value;
-    this.store.dispatch(patchForm({ id: this.formGroupId, value }));
+    const { storeFormSyncId, formGroup } = this;
+    const value = syncRawValue ? formGroup.getRawValue() : formGroup.value;
+    this.store.dispatch(patchForm({ storeFormSyncId, value }));
   }
 }
