@@ -2,8 +2,8 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BrowserTestingModule } from '@angular/platform-browser/testing';
-import { MockStore, provideMockStore, getMockStore } from '@ngrx/store/testing';
-import { StoreFormSyncDirective, StoreFormSyncConfig } from '../../public_api';
+import { getMockStore, MockStore, provideMockStore } from '@ngrx/store/testing';
+import { StoreFormSyncConfig, StoreFormSyncDirective } from '../../public_api';
 import { defaultConfig } from '../models/store-form-sync-config';
 
 describe('StoreFormSyncDirective', () => {
@@ -12,15 +12,14 @@ describe('StoreFormSyncDirective', () => {
 
   let subject: StoreFormSyncDirective;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [BrowserTestingModule],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [provideMockStore()]
-    }).compileComponents();
+    });
 
-    store = getMockStore({ initialState: {} });
-
+    store = getMockStore();
     dispatchSpy = jest.spyOn(store, 'dispatch');
   });
 
