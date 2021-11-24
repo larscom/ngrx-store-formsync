@@ -42,7 +42,7 @@ export class FormGroupDirective implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
         filter(() => this.formGroupSync),
         select(formSelectors.selectFormValue({ id: this.formGroupId })),
-        filter((value) => value != null)
+        filter((value) => !!value)
       )
       .subscribe((value) => this.formGroup.patchValue(value, { emitEvent: false }));
   }
