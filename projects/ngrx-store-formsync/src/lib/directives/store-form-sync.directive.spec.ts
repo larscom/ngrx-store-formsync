@@ -1,5 +1,5 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
+import { getTestBed, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BrowserTestingModule } from '@angular/platform-browser/testing';
 import { getMockStore, MockStore, provideMockStore } from '@ngrx/store/testing';
@@ -13,7 +13,7 @@ describe('StoreFormSyncDirective', () => {
   let subject: StoreFormSyncDirective;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
+    getTestBed().configureTestingModule({
       imports: [BrowserTestingModule],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [provideMockStore()]
