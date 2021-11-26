@@ -34,7 +34,7 @@ export class StoreFormSyncModule {
   /**
    * Import in every feature module
    */
-  static forFeature(config?: StoreFormSyncConfig): ModuleWithProviders<StoreFormSyncModule> {
+  static forFeature(config?: Partial<StoreFormSyncConfig>): ModuleWithProviders<StoreFormSyncModule> {
     const userConfig = config || {};
 
     return {
