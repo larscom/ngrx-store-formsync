@@ -7,7 +7,9 @@ import { IRootState } from 'src/store/models/root-state';
 @Component({
   selector: 'app-root',
   template: `
-    <div class="container-fluid">
+    <div class="container-fluid root">
+      <button class="btn btn-primary" (click)="reset()">Reset</button>
+
       <form [formGroup]="form" storeFormSync [storeFormSyncId]="storeFormSyncId">
         <input type="text" formControlName="lessoncode" />
         <input type="text" formControlName="countrycode" />
@@ -67,9 +69,18 @@ import { IRootState } from 'src/store/models/root-state';
           </div>
         </div>
       </form>
-      <button class="btn btn-primary" (click)="reset()">Reset</button>
     </div>
-  `
+  `,
+  styles: [
+    `
+      .root {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        max-width: 50vw;
+      }
+    `
+  ]
 })
 export class AppComponent implements OnInit {
   form: FormGroup;

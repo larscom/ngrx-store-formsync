@@ -1,5 +1,5 @@
-import { storeFormSyncKey, StoreFormSyncConfig } from '@larscom/ngrx-store-formsync';
+import { storeFormSyncKey, StoreFormSyncState } from '@larscom/ngrx-store-formsync';
 
 export interface IRootState {
-  [storeFormSyncKey]?: StoreFormSyncConfig;
+  [storeFormSyncKey]?: StoreFormSyncState;
 }
