@@ -5,7 +5,7 @@
     "start": "npm run start:app",
     "start:app": "ng serve",
     "build": "ng build",
-    "test": "jest --detectOpenHandles --coverage",
+    "test": "jest --detectOpenHandles",
     "test:ci": "jest --forceExit --runInBand --detectOpenHandles --coverage",
     "test:watch": "jest --detectOpenHandles --coverage --watch",
     "build:lib": "ng build ngrx-store-formsync && npm run copy:readme",

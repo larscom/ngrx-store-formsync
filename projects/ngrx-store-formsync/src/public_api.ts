@@ -4,5 +4,5 @@ export { StoreFormSyncModule } from './lib/store-form-sync.module';
 export { StoreFormSyncState } from './lib/store/form.reducer';
 export { storeFormSyncKey } from './lib/store/form.constants';
 
-export * as formSyncActions from './lib/store/form.actions';
-export * as formSyncSelectors from './lib/store/form.selectors';
+export * as storeFormSyncActions from './lib/store/form.actions';
+export * as storeFormSyncSelectors from './lib/store/form.selectors';

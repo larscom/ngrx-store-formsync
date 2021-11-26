@@ -1,10 +1,24 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { getTestBed, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BrowserTestingModule } from '@angular/platform-browser/testing';
 import { getMockStore, MockStore, provideMockStore } from '@ngrx/store/testing';
-import { StoreFormSyncConfig, StoreFormSyncDirective } from '../../public_api';
+import { storeFormSyncActions, StoreFormSyncConfig, StoreFormSyncDirective } from '../../public_api';
 import { defaultConfig } from '../models/store-form-sync-config';
+
+function createSubject(store: MockStore, config?: Partial<StoreFormSyncConfig>): StoreFormSyncDirective {
+  const directive = new StoreFormSyncDirective({ ...defaultConfig, ...(config || {}) }, store);
+
+  const field1 = new FormControl(null, Validators.required);
+  const field2 = new FormControl(null, Validators.required);
+
+  directive.formGroup = new FormGroup({ field1, field2 });
+  directive.storeFormSyncId = '1';
+
+  directive.ngOnInit();
+
+  return directive;
+}
 
 describe('StoreFormSyncDirective', () => {
   let store: MockStore<any>;
@@ -12,13 +26,15 @@ describe('StoreFormSyncDirective', () => {
 
   let subject: StoreFormSyncDirective;
 
-  beforeEach(() => {
-    getTestBed().configureTestingModule({
+  beforeAll(() => {
+    TestBed.configureTestingModule({
       imports: [BrowserTestingModule],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [provideMockStore()]
     });
+  });
 
+  beforeEach(() => {
     store = getMockStore();
     dispatchSpy = jest.spyOn(store, 'dispatch');
   });
@@ -32,17 +48,17 @@ describe('StoreFormSyncDirective', () => {
     expect(subject).toBeTruthy();
   });
 
-  // it('should dispatch with default configuration', () => {
-  //   createDirective(defaultConfig);
+  it('should dispatch with default configuration', () => {
+    subject = createSubject(store);
 
-  //   const { formGroupId, formGroup } = directive;
+    const { formGroup, storeFormSyncId } = subject;
 
-  //   field1.setValue('test');
+    formGroup.get('field1')!.setValue('test');
 
-  //   const expected = formActions.patchForm({ id: formGroupId, value: formGroup.value });
+    const expected = storeFormSyncActions.patchForm({ storeFormSyncId, value: formGroup.value });
 
-  //   expect(dispatchSpy).toHaveBeenCalledWith(expected);
-  // });
+    expect(dispatchSpy).toHaveBeenCalledWith(expected);
+  });
 
   // it('should not dispatch with invalid form status', () => {
   //   createDirective({ syncValidOnly: true });
@@ -143,19 +159,3 @@ describe('StoreFormSyncDirective', () => {
   //   expect(patchValueSpy).toHaveBeenCalledWith({ field1: 'test', field2: 'test' }, { emitEvent: false });
   // });
 });
-
-function createSubject(store: MockStore, config?: Partial<StoreFormSyncConfig>): StoreFormSyncDirective {
-  const finalConfig: StoreFormSyncConfig = { ...defaultConfig, ...(config || {}) };
-
-  const directive = new StoreFormSyncDirective(finalConfig, store);
-
-  const field1 = new FormControl(null, Validators.required);
-  const field2 = new FormControl(null, Validators.required);
-
-  directive.formGroup = new FormGroup({ field1, field2 });
-  directive.storeFormSyncId = '1';
-
-  directive.ngOnInit();
-
-  return directive;
-}
