@@ -43,7 +43,7 @@ describe('StoreFormSyncDirective', () => {
     subject.ngOnDestroy();
   });
 
-  it('should create StoreFormSyncDirective', () => {
+  it('should create subject', () => {
     subject = createSubject(store);
     expect(subject).toBeTruthy();
   });
@@ -57,105 +57,105 @@ describe('StoreFormSyncDirective', () => {
 
     const expected = storeFormSyncActions.patchForm({ storeFormSyncId, value: formGroup.value });
 
+    expect(formGroup.valid).toBeFalsy();
     expect(dispatchSpy).toHaveBeenCalledWith(expected);
   });
 
-  // it('should not dispatch with invalid form status', () => {
-  //   createDirective({ syncValidOnly: true });
+  it('should not dispatch with invalid form status', () => {
+    subject = createSubject(store, { syncValidOnly: true });
 
-  //   field1.setValue('test');
+    const { formGroup } = subject;
 
-  //   expect(dispatchSpy).not.toHaveBeenCalled();
-  // });
+    formGroup.get('field1')!.setValue('test');
 
-  // it('should not dispatch on value change', () => {
-  //   createDirective({ syncOnSubmit: true });
+    expect(formGroup.valid).toBeFalsy();
+    expect(dispatchSpy).not.toHaveBeenCalled();
+  });
 
-  //   field1.setValue('test');
+  it('should not dispatch on value change', () => {
+    subject = createSubject(store, { syncOnSubmit: true });
 
-  //   expect(dispatchSpy).not.toHaveBeenCalled();
-  // });
+    const { formGroup } = subject;
 
-  // it('should dispatch on submit', () => {
-  //   createDirective({ syncOnSubmit: true });
+    formGroup.get('field1')!.setValue('test');
 
-  //   const { formGroupId, formGroup } = directive;
+    expect(dispatchSpy).not.toHaveBeenCalled();
+  });
 
-  //   directive.onSubmit();
+  it('should dispatch on submit', () => {
+    subject = createSubject(store, { syncOnSubmit: true });
 
-  //   const expected = formActions.patchForm({ id: formGroupId, value: formGroup.value });
+    const { formGroup, storeFormSyncId } = subject;
 
-  //   expect(dispatchSpy).toHaveBeenCalledWith(expected);
-  // });
+    subject.onSubmit();
 
-  // it('should dispatch on submit and valid form only', () => {
-  //   createDirective({ syncOnSubmit: true, syncValidOnly: true });
+    const expected = storeFormSyncActions.patchForm({ storeFormSyncId, value: formGroup.value });
 
-  //   const { formGroupId, formGroup } = directive;
+    expect(formGroup.valid).toBeFalsy();
+    expect(dispatchSpy).toHaveBeenCalledWith(expected);
+  });
 
-  //   field1.setValue('test');
-  //   field2.setValue('test');
+  it('should dispatch on submit and valid form only', () => {
+    subject = createSubject(store, { syncOnSubmit: true, syncValidOnly: true });
 
-  //   directive.onSubmit();
+    const { formGroup, storeFormSyncId } = subject;
 
-  //   const expected = formActions.patchForm({ id: formGroupId, value: formGroup.value });
+    formGroup.get('field1')!.setValue('test');
+    formGroup.get('field2')!.setValue('test');
 
-  //   expect(dispatchSpy).toHaveBeenCalledWith(expected);
-  // });
+    subject.onSubmit();
 
-  // it('should not dispatch on submit with invalid form', () => {
-  //   createDirective({ syncOnSubmit: true, syncValidOnly: true });
+    const expected = storeFormSyncActions.patchForm({ storeFormSyncId, value: formGroup.value });
 
-  //   field1.setValue('test');
+    expect(formGroup.valid).toBeTruthy();
+    expect(dispatchSpy).toHaveBeenCalledWith(expected);
+  });
 
-  //   directive.onSubmit();
+  it('should not dispatch on submit with invalid form', () => {
+    subject = createSubject(store, { syncOnSubmit: true, syncValidOnly: true });
 
-  //   expect(dispatchSpy).not.toHaveBeenCalled();
-  // });
+    const { formGroup } = subject;
 
-  // it('should dispatch raw value on submit and valid form only', () => {
-  //   createDirective({ syncRawValue: true, syncOnSubmit: true, syncValidOnly: true });
+    formGroup.get('field1')!.setValue('test');
 
-  //   const { formGroupId, formGroup } = directive;
+    subject.onSubmit();
 
-  //   field1.setValue('test');
-  //   field1.disable();
+    expect(formGroup.valid).toBeFalsy();
+    expect(dispatchSpy).not.toHaveBeenCalled();
+  });
 
-  //   field2.setValue('test');
+  it('should dispatch raw value on submit and valid form only', () => {
+    subject = createSubject(store, { syncRawValue: true, syncOnSubmit: true, syncValidOnly: true });
 
-  //   directive.onSubmit();
+    const { formGroup, storeFormSyncId } = subject;
 
-  //   const expected = formActions.patchForm({ id: formGroupId, value: formGroup.getRawValue() });
+    formGroup.get('field1')!.setValue('test');
+    formGroup.get('field1')!.disable();
 
-  //   expect(dispatchSpy).toHaveBeenCalledWith(expected);
-  // });
+    formGroup.get('field2')!.setValue('test');
 
-  // it('should sync disabled controls', () => {
-  //   createDirective({ syncRawValue: true });
+    subject.onSubmit();
 
-  //   const { formGroupId, formGroup } = directive;
+    const expected = storeFormSyncActions.patchForm({ storeFormSyncId, value: formGroup.getRawValue() });
 
-  //   field1.setValue('test');
-  //   field1.disable();
+    expect(formGroup.valid).toBeTruthy();
+    expect(dispatchSpy).toHaveBeenCalledWith(expected);
+  });
 
-  //   field2.setValue('test');
+  it('should sync disabled controls', () => {
+    subject = createSubject(store, { syncRawValue: true });
 
-  //   const expected = formActions.patchForm({ id: formGroupId, value: formGroup.getRawValue() });
+    const { formGroup, storeFormSyncId } = subject;
 
-  //   expect(dispatchSpy).toHaveBeenCalledWith(expected);
-  // });
+    formGroup.get('field1')!.setValue('test');
+    formGroup.get('field1')!.disable();
 
-  // it('should patch form', () => {
-  //   const state = { 1: { field1: 'test', field2: 'test' } };
+    formGroup.get('field2')!.setValue('test');
+    formGroup.get('field2')!.disable();
 
-  //   createDirective(defaultConfig, state);
+    const expected = storeFormSyncActions.patchForm({ storeFormSyncId, value: formGroup.getRawValue() });
 
-  //   const { formGroup } = directive;
-
-  //   const patchValueSpy = spyOn(formGroup, 'patchValue');
-
-  //   directive.ngOnInit();
-
-  //   expect(patchValueSpy).toHaveBeenCalledWith({ field1: 'test', field2: 'test' }, { emitEvent: false });
-  // });
+    expect(formGroup.valid).toBeFalsy();
+    expect(dispatchSpy).toHaveBeenCalledWith(expected);
+  });
 });

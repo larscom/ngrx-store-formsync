@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { formSyncActions } from '@larscom/ngrx-store-formsync';
+import { storeFormSyncActions } from '@larscom/ngrx-store-formsync';
 import { Store } from '@ngrx/store';
 import { IRootState } from 'src/store/models/root-state';
 
@@ -112,7 +112,7 @@ export class AppComponent implements OnInit {
 
   reset(): void {
     const { storeFormSyncId, initialFormValue: value } = this;
-    this.store.dispatch(formSyncActions.setForm({ storeFormSyncId, value }));
+    this.store.dispatch(storeFormSyncActions.setForm({ storeFormSyncId, value }));
   }
 
   getTasks(): FormGroup[] {
