@@ -8,6 +8,16 @@ import { patchForm } from '../store/form.actions';
 import * as formSelectors from '../store/form.selectors';
 import { storeFormSyncConfigToken } from '../tokens/config';
 
+const requireInputs = (formGroup?: FormGroup, storeFormSyncId?: string): void => {
+  if (!formGroup) {
+    throw new Error('StoreFormSync: formGroup is missing!');
+  }
+
+  if (!storeFormSyncId) {
+    throw new Error('StoreFormSync: storeFormSyncId is missing!');
+  }
+};
+
 @Directive({
   selector: '[storeFormSync]'
 })
@@ -25,17 +35,15 @@ export class StoreFormSyncDirective implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   ngOnInit(): void {
-    const { storeFormSyncId } = this;
+    const { storeFormSyncId, formGroup } = this;
 
-    if (!storeFormSyncId) {
-      return;
-    }
+    requireInputs(formGroup, storeFormSyncId);
 
-    this.formGroup.valueChanges
+    formGroup.valueChanges
       .pipe(
         takeUntil(this.destroy$),
         filter(() => !this.storeFormSyncDisabled),
-        filter(() => !(this.config.syncValidOnly && !this.formGroup.valid)),
+        filter(() => !(this.config.syncValidOnly && !formGroup.valid)),
         filter(() => !this.config.syncOnSubmit)
       )
       .subscribe(() => this.dispatch(this.config.syncRawValue));
@@ -44,20 +52,18 @@ export class StoreFormSyncDirective implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.destroy$),
         filter(() => !this.storeFormSyncDisabled),
-        select(formSelectors.selectFormValue({ storeFormSyncId })),
-        filter((value) => !!value)
+        select(formSelectors.selectFormValue({ storeFormSyncId }))
       )
-      .subscribe((value) => this.formGroup.patchValue(value, { emitEvent: false }));
+      .subscribe((value) => formGroup.patchValue(value, { emitEvent: false }));
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
-    this.destroy$.unsubscribe();
   }
 
   @HostListener('submit')
   onSubmit(): void {
-    if (!this.storeFormSyncId || this.storeFormSyncDisabled) {
+    if (this.storeFormSyncDisabled) {
       return;
     }
 

@@ -66,6 +66,23 @@ describe('StoreFormSyncReducer', () => {
     expect(updatedState).toEqual(expected);
   });
 
+  it('should PATCH form value for storeFormSyncId with initialState', () => {
+    const storeFormSyncId = '1';
+
+    const updatedState = storeFormSyncReducer(
+      initialState,
+      storeFormSyncActions.patchForm({ storeFormSyncId, value: { field1: 'newValue' } })
+    );
+
+    const expected: StoreFormSyncState = {
+      [storeFormSyncId]: {
+        field1: 'newValue'
+      }
+    };
+
+    expect(updatedState).toEqual(expected);
+  });
+
   it('should DELETE form value for storeFormSyncId', () => {
     const storeFormSyncId = '1';
     const state: StoreFormSyncState = {
