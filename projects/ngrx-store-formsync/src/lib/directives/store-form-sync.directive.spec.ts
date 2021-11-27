@@ -159,14 +159,6 @@ describe('StoreFormSyncDirective', () => {
     expect(dispatchSpy).not.toHaveBeenCalled();
   });
 
-  it('should not dispatch on submit if syncOnSubmit is disabled', () => {
-    subject = createSubject(store, { syncOnSubmit: false });
-
-    subject.onSubmit();
-
-    expect(dispatchSpy).not.toHaveBeenCalled();
-  });
-
   it('should dispatch on submit when syncOnSubmit is enabled', () => {
     subject = createSubject(store, { syncOnSubmit: true });
 

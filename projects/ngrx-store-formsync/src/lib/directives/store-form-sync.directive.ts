@@ -42,9 +42,7 @@ export class StoreFormSyncDirective implements OnInit, OnDestroy {
     formGroup.valueChanges
       .pipe(
         takeUntil(this.destroy$),
-        filter(() => !this.storeFormSyncDisabled),
-        filter(() => !(this.config.syncValidOnly && !formGroup.valid)),
-        filter(() => !this.config.syncOnSubmit)
+        filter(() => this.dispatchWhenValueChanges())
       )
       .subscribe(() => this.dispatch(this.config.syncRawValue));
 
@@ -63,18 +61,9 @@ export class StoreFormSyncDirective implements OnInit, OnDestroy {
 
   @HostListener('submit')
   onSubmit(): void {
-    if (this.storeFormSyncDisabled) {
+    if (this.skipDispatchOnSubmit()) {
       return;
     }
-
-    if (!this.config.syncOnSubmit) {
-      return;
-    }
-
-    if (this.config.syncValidOnly && !this.formGroup.valid) {
-      return;
-    }
-
     this.dispatch(this.config.syncRawValue);
   }
 
@@ -82,5 +71,37 @@ export class StoreFormSyncDirective implements OnInit, OnDestroy {
     const { storeFormSyncId, formGroup } = this;
     const value = syncRawValue ? formGroup.getRawValue() : formGroup.value;
     this.store.dispatch(patchForm({ storeFormSyncId, value }));
+  }
+
+  private skipDispatchOnSubmit(): boolean {
+    const { storeFormSyncDisabled, formGroup, config } = this;
+
+    if (storeFormSyncDisabled) {
+      return true;
+    }
+
+    if (config.syncValidOnly) {
+      return !formGroup.valid;
+    }
+
+    return false;
+  }
+
+  private dispatchWhenValueChanges(): boolean {
+    const { storeFormSyncDisabled, formGroup, config } = this;
+
+    if (storeFormSyncDisabled) {
+      return false;
+    }
+
+    if (config.syncOnSubmit) {
+      return false;
+    }
+
+    if (config.syncValidOnly) {
+      return formGroup.valid;
+    }
+
+    return true;
   }
 }
