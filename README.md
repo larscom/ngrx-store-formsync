@@ -8,7 +8,12 @@
 [![codeQL](https://github.com/larscom/ngrx-store-formsync/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/larscom/ngrx-store-formsync/actions/workflows/codeql-analysis.yml)
 [![codecov](https://codecov.io/gh/larscom/ngrx-store-formsync/branch/master/graph/badge.svg?token=KDMA88UI7L)](https://codecov.io/gh/larscom/ngrx-store-formsync)
 
-Easily synchronize any **reactive form** to the `@ngrx/store` in just a few steps.
+Easily synchronize any **reactive form** to the `@ngrx/store` in a few steps.
+
+## Supports
+
+- &#10003; Reactive Forms only
+- &#10003; [Persisting State](#sync-to-storage) (additional library)
 
 ## Dependencies
 
@@ -53,7 +58,114 @@ export class AppModule {}
 </form>
 ```
 
-## Persisting State
+Thats it, your formgroup will now get synced to the `@ngrx/store`
+
+## StoreFormSync Directive API
+
+| Attribute               | Type    | Default | Required | Description                                                  |
+| ----------------------- | ------- | ------- | -------- | ------------------------------------------------------------ |
+| `storeFormSyncId`       | string  | null    | yes      | The unique ID for the form group.                            |
+| `storeFormSyncDisabled` | boolean | false   | no       | Whether the form group value should sync to the @ngrx/store. |
+
+## Managing form with actions and selectors
+
+### Get Form Value
+
+```ts
+import { Component } from '@angular/core';
+import { storeFormSyncSelectors } from '@larscom/ngrx-store-formsync'; // import selectors
+import { Store, select } from '@ngrx/store';
+
+@Component({
+  selector: 'app-my-component',
+  template: `
+    <div>
+      <h1>My Form Value</h1>
+      {{ myFormValue$ | async | json }}
+    </div>
+  `,
+  styleUrls: ['my-component.component.scss']
+})
+export class MyComponent {
+  myFormValue$ = this.store.pipe(select(storeFormSyncSelectors.selectFormValue({ storeFormSyncId: 'myId' })));
+
+  constructor(private readonly store: Store) {}
+}
+```
+
+### Set Form Value
+
+```ts
+import { Component } from '@angular/core';
+import { storeFormSyncActions } from '@larscom/ngrx-store-formsync'; // import actions
+import { Store, select } from '@ngrx/store';
+
+@Component({
+  selector: 'app-my-component',
+  templateUrl: 'my-component.component.html'
+  styleUrls: ['my-component.component.scss']
+})
+export class MyComponent {
+  constructor(private readonly store: Store) {}
+
+  setForm(): void {
+    const value = {
+      firstName: 'Jan',
+      lastName: 'Jansen'
+    };
+    this.store.dispatch(storeFormSyncActions.setForm({ storeFormSyncId: 'myId', value }));
+  }
+}
+```
+
+### Patch Form Value
+
+```ts
+import { Component } from '@angular/core';
+import { storeFormSyncActions } from '@larscom/ngrx-store-formsync'; // import actions
+import { Store, select } from '@ngrx/store';
+
+@Component({
+  selector: 'app-my-component',
+  templateUrl: 'my-component.component.html'
+  styleUrls: ['my-component.component.scss']
+})
+export class MyComponent {
+  constructor(private readonly store: Store) {}
+
+  patchForm(): void {
+    const value = {
+      firstName: 'Jan' // lastName can be omitted
+      //lastName: 'Jansen'
+    };
+
+   this.store.dispatch(storeFormSyncActions.patchForm({ storeFormSyncId: 'myId', value }));
+  }
+}
+```
+
+### Delete Form Value
+
+```ts
+import { Component } from '@angular/core';
+import { storeFormSyncActions } from '@larscom/ngrx-store-formsync'; // import actions
+import { Store, select } from '@ngrx/store';
+
+@Component({
+  selector: 'app-my-component',
+  templateUrl: 'my-component.component.html'
+  styleUrls: ['my-component.component.scss']
+})
+export class MyComponent {
+  constructor(private readonly store: Store) {}
+
+  deleteForm(): void {
+    this.store.dispatch(storeFormSyncActions.deleteForm({ storeFormSyncId: 'myId'}));
+  }
+}
+```
+
+## [Persisting State](#sync-to-storage)
 
 This library works really well with [@larscom/ngrx-store-storagesync](https://github.com/larscom/ngrx-store-storagesync)
 
@@ -73,10 +185,3 @@ export function storageSyncReducer(reducer: ActionReducer<IRootState>): ActionRe
 ```
 
 Head over to [@larscom/ngrx-store-storagesync](https://github.com/larscom/ngrx-store-storagesync) on how to configure that library.
-
-## StoreFormSync Directive API
-
-| Attribute               | Type    | Default | Required | Description                                                  |
-| ----------------------- | ------- | ------- | -------- | ------------------------------------------------------------ |
-| `storeFormSyncId`       | string  | null    | yes      | The unique ID for the form group.                            |
-| `storeFormSyncDisabled` | boolean | false   | no       | Whether the form group value should sync to the @ngrx/store. |
