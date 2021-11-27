@@ -13,7 +13,7 @@ Easily synchronize any **reactive form** to the `@ngrx/store` in a few steps.
 ## Supports
 
 - &#10003; Reactive Forms only
-- &#10003; [Persisting State](#sync-to-storage) (additional library)
+- &#10003; [Persisting State](#Persisting-State) (additional library)
 
 ## Dependencies
 
@@ -58,7 +58,7 @@ export class AppModule {}
 </form>
 ```
 
-Thats it, your formgroup will now get synced to the `@ngrx/store`
+Your formGroup will now get synced to the `@ngrx/store`
 
 ## StoreFormSync Directive API
 
@@ -165,11 +165,11 @@ export class MyComponent {
 }
 ```
 
-## [Persisting State](#sync-to-storage)
+## Persisting State
 
 This library works really well with [@larscom/ngrx-store-storagesync](https://github.com/larscom/ngrx-store-storagesync)
 
-In 2 seconds you can persist the state of your forms to `localStorage` or `sessionStorage`
+You can persist the state of your forms to `localStorage` or `sessionStorage` in a few seconds.
 
 ```ts
 import { storeFormSyncKey } from '@larscom/ngrx-store-formsync'; // import storeFormSyncKey
