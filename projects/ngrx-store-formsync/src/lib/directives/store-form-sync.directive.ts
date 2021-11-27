@@ -35,7 +35,7 @@ export class StoreFormSyncDirective implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   ngOnInit(): void {
-    const { storeFormSyncId, formGroup } = this;
+    const { storeFormSyncId, formGroup, store } = this;
 
     requireInputs(formGroup, storeFormSyncId);
 
@@ -46,7 +46,7 @@ export class StoreFormSyncDirective implements OnInit, OnDestroy {
       )
       .subscribe(() => this.dispatch(this.config.syncRawValue));
 
-    this.store
+    store
       .pipe(
         takeUntil(this.destroy$),
         filter(() => !this.storeFormSyncDisabled),

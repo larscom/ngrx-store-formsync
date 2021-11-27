@@ -19,9 +19,7 @@ npm i --save @larscom/ngrx-store-formsync
 
 ## Usage
 
-Import `StoreFormSyncModule.forRoot()` once inside the root module.
-
-For every other module, use `StoreFormSyncModule.forFeature()`
+1. Import `StoreFormSyncModule.forRoot()` once inside a root module. For every other module, use `StoreFormSyncModule.forFeature()`
 
 ```ts
 import { NgModule } from '@angular/core';
@@ -34,9 +32,27 @@ import { StoreFormSyncModule } from '@larscom/ngrx-store-formsync';
     BrowserModule,
     StoreModule.forRoot(),
     // import StoreFormSyncModule.forRoot() only once
-    // for every other module, use StoreFormSyncModule.forFeature()
     StoreFormSyncModule.forRoot()
   ]
 })
 export class AppModule {}
 ```
+
+2. Add the `storeFormSync` directive on the same element as `formGroup` and provide a `storeFormSyncId`
+
+```html
+<form [formGroup]="myFormGroup" storeFormSync storeFormSyncId="1">
+  <div>
+    <input formControlName="firstName" />
+    <input formControlName="lastName" />
+  </div>
+  <button type="submit">Submit</button>
+</form>
+```
+
+## StoreFormSync Directive API
+
+| Attribute               | Type    | Default | Required | Description                                                  |
+| ----------------------- | ------- | ------- | -------- | ------------------------------------------------------------ |
+| `storeFormSyncId`       | string  | null    | yes      | The unique ID for the form group.                            |
+| `storeFormSyncDisabled` | boolean | false   | no       | Whether the form group value should sync to the @ngrx/store. |
