@@ -3,7 +3,10 @@
 [![npm-version](https://img.shields.io/npm/v/@larscom/ngrx-store-formsync.svg?label=npm)](https://www.npmjs.com/package/@larscom/ngrx-store-formsync)
 ![npm](https://img.shields.io/npm/dw/@larscom/ngrx-store-formsync)
 [![license](https://img.shields.io/npm/l/@larscom/ngrx-store-formsync.svg)](https://github.com/larscom/ngrx-store-formsync/blob/master/LICENSE)
-[![@larscom/ngrx-store-formsync](https://github.com/larscom/ngrx-store-formsync/workflows/@larscom/ngrx-store-formsync/badge.svg?branch=master)](https://github.com/larscom/ngrx-store-formsync)
+
+[![master](https://github.com/larscom/ngrx-store-formsync/actions/workflows/workflow.yml/badge.svg?branch=master)](https://github.com/larscom/ngrx-store-formsync/actions/workflows/workflow.yml)
+[![codeQL](https://github.com/larscom/ngrx-store-formsync/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/larscom/ngrx-store-formsync/actions/workflows/codeql-analysis.yml)
+[![codecov](https://codecov.io/gh/larscom/ngrx-store-formsync/branch/master/graph/badge.svg?token=KDMA88UI7L)](https://codecov.io/gh/larscom/ngrx-store-formsync)
 
 Easily synchronize any **reactive form** to the `@ngrx/store` in just a few steps.
 
