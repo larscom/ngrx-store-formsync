@@ -40,7 +40,7 @@ jobs:
       - name: start unit test
         run: |
           npm run test:ci
-          codecov -f coverage/*.json
+          $(npm bin)/codecov -f coverage/*.json
 
   npm:
     needs:
