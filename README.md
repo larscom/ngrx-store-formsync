@@ -50,6 +50,27 @@ export class AppModule {}
 </form>
 ```
 
+## Persisting State
+
+This library works really well with [@larscom/ngrx-store-storagesync](https://github.com/larscom/ngrx-store-storagesync)
+
+In 2 seconds you can persist the state of your forms to `localStorage` or `sessionStorage`
+
+```ts
+import { storeFormSyncKey } from '@larscom/ngrx-store-formsync'; // import storeFormSyncKey
+
+export function storageSyncReducer(reducer: ActionReducer<IRootState>): ActionReducer<IRootState> {
+  const metaReducer = storageSync<IRootState>({
+    features: [{ stateKey: storeFormSyncKey }],
+    storage: window.localStorage // persist to localStorage
+  });
+
+  return metaReducer(reducer);
+}
+```
+
+Head over to [@larscom/ngrx-store-storagesync](https://github.com/larscom/ngrx-store-storagesync) on how to configure that library.
+
 ## StoreFormSync Directive API
 
 | Attribute               | Type    | Default | Required | Description                                                  |
