@@ -61,7 +61,7 @@ import { storeFormSyncKey } from '@larscom/ngrx-store-formsync'; // import store
 
 export function storageSyncReducer(reducer: ActionReducer<IRootState>): ActionReducer<IRootState> {
   const metaReducer = storageSync<IRootState>({
-    features: [{ stateKey: storeFormSyncKey }], // add storeFormSyncKey as feature
+    features: [{ stateKey: storeFormSyncKey }], // add storeFormSync as feature
     storage: window.localStorage // persist to localStorage
   });
 
