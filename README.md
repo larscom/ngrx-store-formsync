@@ -62,10 +62,11 @@ Your formGroup will now get synced to the `@ngrx/store`
 
 ## StoreFormSync Directive API
 
-| Attribute               | Type    | Default | Required | Description                                                  |
-| ----------------------- | ------- | ------- | -------- | ------------------------------------------------------------ |
-| `storeFormSyncId`       | string  | null    | yes      | The unique ID for the form group.                            |
-| `storeFormSyncDisabled` | boolean | false   | no       | Whether the form group value should sync to the @ngrx/store. |
+| Attribute               | Type      | Default   | Required | Description                                                  |
+| ----------------------- | --------- | --------- | -------- | ------------------------------------------------------------ |
+| `formGroup`             | FormGroup | undefined | yes      | The form group which needs to get synced to the @ngrx/store. |
+| `storeFormSyncId`       | string    | undefined | yes      | The unique ID for the form group.                            |
+| `storeFormSyncDisabled` | boolean   | false     | no       | Whether the form group value should sync to the @ngrx/store. |
 
 ## Managing form with actions and selectors
 
