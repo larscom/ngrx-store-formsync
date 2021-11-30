@@ -17,7 +17,7 @@ Easily synchronize any **reactive form** to the `@ngrx/store` in a few steps.
 
 ## Dependencies
 
-`@larscom/ngrx-store-formsync` depends on [@ngrx/store 8+](https://github.com/ngrx/store) and [Angular 8+](https://github.com/angular/angular).
+`@larscom/ngrx-store-formsync` depends on [@ngrx/store](https://github.com/ngrx/store) and [Angular 12+](https://github.com/angular/angular).
 
 ## Installation
 
