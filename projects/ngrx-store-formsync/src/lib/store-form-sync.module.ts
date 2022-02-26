@@ -1,7 +1,7 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { StoreModule } from '@ngrx/store';
 import { StoreFormSyncDirective } from './directives/store-form-sync.directive';
-import { defaultConfig, StoreFormSyncConfig } from './models/store-form-sync-config';
+import { defaultConfig, StoreFormSyncConfig } from './store-form-sync-config';
 import { storeFormSyncKey } from './store/form.constants';
 import { storeFormSyncReducer } from './store/form.reducer';
 import { storeFormSyncConfigToken } from './tokens/config';

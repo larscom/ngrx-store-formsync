@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
-import { StoreFormSyncConfig } from '../models/store-form-sync-config';
+import { StoreFormSyncConfig } from '../store-form-sync-config';
 import { patchForm } from '../store/form.actions';
 import * as formSelectors from '../store/form.selectors';
 import { storeFormSyncConfigToken } from '../tokens/config';

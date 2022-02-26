@@ -1,10 +1,10 @@
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { getMockStore, MockStore } from '@ngrx/store/testing';
 import { storeFormSyncActions, StoreFormSyncConfig, StoreFormSyncDirective, storeFormSyncKey } from '../../public_api';
-import { defaultConfig } from '../models/store-form-sync-config';
+import { defaultConfig } from '../store-form-sync-config';
 
-function createDirective(store: MockStore, config?: Partial<StoreFormSyncConfig>, init = true): StoreFormSyncDirective {
-  const directive = new StoreFormSyncDirective({ ...defaultConfig, ...(config || {}) }, store);
+function createDirective(store: MockStore, config?: StoreFormSyncConfig, init = true): StoreFormSyncDirective {
+  const directive = new StoreFormSyncDirective(config || defaultConfig, store);
 
   const field1 = new FormControl(null, Validators.required);
   const field2 = new FormControl(null, Validators.required);
@@ -41,15 +41,17 @@ describe('StoreFormSyncDirective', () => {
     directive.ngOnDestroy();
   });
 
-  it('should create subject', () => {
+  it('should create directive', () => {
     directive = createDirective(store);
     expect(directive).toBeTruthy();
   });
 
-  it('should dispatch with default configuration', () => {
-    directive = createDirective(store);
+  it('should serialize and dispatch with default configuration', () => {
+    directive = createDirective(store, defaultConfig);
 
     const { formGroup, storeFormSyncId } = directive;
+
+    const serializeSpy = jest.spyOn(defaultConfig, 'serialize');
 
     formGroup.get('field1')!.setValue('test');
 
@@ -57,6 +59,7 @@ describe('StoreFormSyncDirective', () => {
 
     expect(formGroup.valid).toBeFalsy();
     expect(dispatchSpy).toHaveBeenCalledWith(expected);
+    expect(serializeSpy).toHaveBeenCalledWith({ field1: 'test', field2: null });
   });
 
   it('should throw error if storeFormSyncId is undefined', () => {
@@ -81,16 +84,18 @@ describe('StoreFormSyncDirective', () => {
     }
   });
 
-  it('should patch form if store contains state', () => {
+  it('should deserialize and patch form if store contains state', () => {
     directive = createDirective(store, defaultConfig, false);
 
     const { formGroup } = directive;
 
     const formGroupPatchSpy = jest.spyOn(formGroup, 'patchValue');
+    const deserializeSpy = jest.spyOn(defaultConfig, 'deserialize');
 
     directive.ngOnInit();
 
     expect(formGroupPatchSpy).toHaveBeenCalledWith({ field: 'value' }, { emitEvent: false });
+    expect(deserializeSpy).toHaveBeenCalledWith(JSON.stringify({ field: 'value' }));
   });
 
   it('should NOT patch form if store is updated and storeFormSyncDisabled is true', () => {
@@ -118,7 +123,7 @@ describe('StoreFormSyncDirective', () => {
   });
 
   it('should not dispatch with invalid form status', () => {
-    directive = createDirective(store, { syncValidOnly: true });
+    directive = createDirective(store, { ...defaultConfig, syncValidOnly: true });
 
     const { formGroup } = directive;
 
@@ -129,7 +134,7 @@ describe('StoreFormSyncDirective', () => {
   });
 
   it('should not dispatch on value change when syncOnSubmit is enabled', () => {
-    directive = createDirective(store, { syncOnSubmit: true });
+    directive = createDirective(store, { ...defaultConfig, syncOnSubmit: true });
 
     const { formGroup } = directive;
 
@@ -139,7 +144,7 @@ describe('StoreFormSyncDirective', () => {
   });
 
   it('should not dispatch on submit if storeFormSyncDisabled is true and syncOnSubmit is enabled', () => {
-    directive = createDirective(store, { syncOnSubmit: true });
+    directive = createDirective(store, { ...defaultConfig, syncOnSubmit: true });
     directive.storeFormSyncDisabled = true;
 
     directive.onSubmit();
@@ -148,7 +153,7 @@ describe('StoreFormSyncDirective', () => {
   });
 
   it('should dispatch on submit when syncOnSubmit is enabled', () => {
-    directive = createDirective(store, { syncOnSubmit: true });
+    directive = createDirective(store, { ...defaultConfig, syncOnSubmit: true });
 
     const { formGroup, storeFormSyncId } = directive;
 
@@ -161,7 +166,7 @@ describe('StoreFormSyncDirective', () => {
   });
 
   it('should dispatch on submit and valid form only', () => {
-    directive = createDirective(store, { syncOnSubmit: true, syncValidOnly: true });
+    directive = createDirective(store, { ...defaultConfig, syncOnSubmit: true, syncValidOnly: true });
 
     const { formGroup, storeFormSyncId } = directive;
 
@@ -177,7 +182,7 @@ describe('StoreFormSyncDirective', () => {
   });
 
   it('should not dispatch on submit with invalid form', () => {
-    directive = createDirective(store, { syncOnSubmit: true, syncValidOnly: true });
+    directive = createDirective(store, { ...defaultConfig, syncOnSubmit: true, syncValidOnly: true });
 
     const { formGroup } = directive;
 
@@ -190,7 +195,12 @@ describe('StoreFormSyncDirective', () => {
   });
 
   it('should dispatch raw value on submit and valid form only', () => {
-    directive = createDirective(store, { syncRawValue: true, syncOnSubmit: true, syncValidOnly: true });
+    directive = createDirective(store, {
+      ...defaultConfig,
+      syncRawValue: true,
+      syncOnSubmit: true,
+      syncValidOnly: true
+    });
 
     const { formGroup, storeFormSyncId } = directive;
 
@@ -208,7 +218,7 @@ describe('StoreFormSyncDirective', () => {
   });
 
   it('should sync disabled controls', () => {
-    directive = createDirective(store, { syncRawValue: true });
+    directive = createDirective(store, { ...defaultConfig, syncRawValue: true });
 
     const { formGroup, storeFormSyncId } = directive;
 

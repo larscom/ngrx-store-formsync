@@ -10,5 +10,5 @@ module.exports = {
     '@ngrx/store/testing': '<rootDir>/node_modules/@ngrx/store/fesm2015/ngrx-store-testing.mjs'
   },
   setupFilesAfterEnv: ['<rootDir>/projects/ngrx-store-formsync/src/test.ts'],
-  coveragePathIgnorePatterns: ['tokens', 'models', 'public_api', 'test', 'module']
+  coveragePathIgnorePatterns: ['tokens', 'public_api', 'test', 'module']
 };
