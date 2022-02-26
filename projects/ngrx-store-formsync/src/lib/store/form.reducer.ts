@@ -8,13 +8,7 @@ export interface StoreFormSyncState {
 
 export const storeFormSyncReducer = createReducer(
   initialState,
-  /**
-   * Set form value from payload
-   */
   on(formActions.setForm, (state, { storeFormSyncId, value }) => ({ ...state, [storeFormSyncId]: value })),
-  /**
-   * Patch form value from payload
-   */
   on(formActions.patchForm, (state, { storeFormSyncId, value }) => {
     return {
       ...state,
@@ -26,8 +20,5 @@ export const storeFormSyncReducer = createReducer(
       }
     };
   }),
-  /**
-   * Remove form value from state
-   */
   on(formActions.deleteForm, (state, { storeFormSyncId }) => ({ ...state, [storeFormSyncId]: undefined }))
 );

@@ -1,5 +1,3 @@
-require('jest-preset-angular/ngcc-jest-processor');
-
 module.exports = {
   preset: 'jest-preset-angular',
   roots: ['<rootDir>/projects/ngrx-store-formsync'],
