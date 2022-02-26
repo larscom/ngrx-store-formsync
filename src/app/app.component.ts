@@ -12,6 +12,7 @@ import { IRootState } from 'src/store/models/root-state';
 
       <form [formGroup]="form" storeFormSync [storeFormSyncId]="storeFormSyncId">
         <input type="text" formControlName="lessoncode" />
+        <input type="text" formControlName="date" />
         <input type="text" formControlName="countrycode" />
         <input type="text" formControlName="languagecode" />
         <div formArrayName="tasks">
@@ -115,6 +116,7 @@ export class AppComponent implements OnInit {
       lessoncode: 'TMM',
       countrycode: 'CA',
       languagecode: 'en',
+      date: new Date(),
       tasks: this.builder.array(this.getTasks())
     });
 
@@ -122,7 +124,10 @@ export class AppComponent implements OnInit {
   }
 
   reset(): void {
-    const { storeFormSyncId, initialFormValue: value } = this;
+    const { storeFormSyncId, initialFormValue } = this;
+
+    const value = JSON.parse(JSON.stringify(initialFormValue));
+
     this.store.dispatch(storeFormSyncActions.setForm({ storeFormSyncId, value }));
   }
 

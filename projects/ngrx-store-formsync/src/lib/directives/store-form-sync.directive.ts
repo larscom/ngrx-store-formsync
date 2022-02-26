@@ -2,7 +2,7 @@ import { Directive, HostListener, Inject, Input, OnDestroy, OnInit } from '@angu
 import { FormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
 import { StoreFormSyncConfig } from '../models/store-form-sync-config';
 import { patchForm } from '../store/form.actions';
 import * as formSelectors from '../store/form.selectors';
@@ -50,7 +50,8 @@ export class StoreFormSyncDirective implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.destroy$),
         filter(() => !this.storeFormSyncDisabled),
-        select(formSelectors.selectFormValue({ storeFormSyncId }))
+        select(formSelectors.selectFormValue({ storeFormSyncId })),
+        map((value) => (value ? this.config.deserialize(JSON.stringify(value)) : value))
       )
       .subscribe((value) => formGroup.patchValue(value, { emitEvent: false }));
   }
@@ -69,7 +70,9 @@ export class StoreFormSyncDirective implements OnInit, OnDestroy {
 
   private dispatch(syncRawValue: boolean): void {
     const { storeFormSyncId, formGroup } = this;
-    const value = syncRawValue ? formGroup.getRawValue() : formGroup.value;
+    const formValue = syncRawValue ? formGroup.getRawValue() : formGroup.value;
+    const value = JSON.parse(this.config.serialize(formValue));
+
     this.store.dispatch(patchForm({ storeFormSyncId, value }));
   }
 
