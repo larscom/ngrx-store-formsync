@@ -1,3 +1,4 @@
+import { fakeAsync, tick } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { getMockStore, MockStore } from '@ngrx/store/testing';
 import { storeFormSyncActions, StoreFormSyncConfig, StoreFormSyncDirective, storeFormSyncKey } from '../../public_api';
@@ -61,6 +62,20 @@ describe('StoreFormSyncDirective', () => {
     expect(dispatchSpy).toHaveBeenCalledWith(expected);
     expect(serializeSpy).toHaveBeenCalledWith({ field1: 'test', field2: null });
   });
+
+  it('should not dispatch after directive is destroyed', fakeAsync(() => {
+    directive = createDirective(store, defaultConfig);
+
+    directive.ngOnDestroy();
+
+    const { formGroup } = directive;
+
+    formGroup.get('field1')!.setValue('test');
+
+    tick(100);
+
+    expect(dispatchSpy).not.toHaveBeenCalled();
+  }));
 
   it('should throw error if storeFormSyncId is undefined', () => {
     directive = createDirective(store, defaultConfig, false);
