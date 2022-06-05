@@ -1,10 +1,8 @@
 module.exports = {
   preset: 'jest-preset-angular',
+  globalSetup: 'jest-preset-angular/global-setup',
   roots: ['<rootDir>/projects/ngrx-store-formsync'],
   testMatch: ['**/+(*.)+(spec).+(ts)'],
-  transform: {
-    '^.+\\.(ts|js|mjs|html|svg)$': 'jest-preset-angular'
-  },
   transformIgnorePatterns: ['node_modules/(?!.*\\.mjs$)'],
   moduleNameMapper: {
     '@ngrx/store/testing': '<rootDir>/node_modules/@ngrx/store/fesm2015/ngrx-store-testing.mjs'

@@ -1,5 +1,5 @@
 import { Directive, HostListener, Inject, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
@@ -8,7 +8,7 @@ import { patchForm } from '../store/form.actions';
 import * as formSelectors from '../store/form.selectors';
 import { storeFormSyncConfigToken } from '../tokens/config';
 
-const requireInputs = (formGroup?: FormGroup, storeFormSyncId?: string): void => {
+const requireInputs = (formGroup?: UntypedFormGroup, storeFormSyncId?: string): void => {
   if (!formGroup) {
     throw new Error('StoreFormSync: formGroup is missing!');
   }
@@ -22,7 +22,7 @@ const requireInputs = (formGroup?: FormGroup, storeFormSyncId?: string): void =>
   selector: '[storeFormSync]'
 })
 export class StoreFormSyncDirective implements OnInit, OnDestroy {
-  @Input() formGroup: FormGroup;
+  @Input() formGroup: UntypedFormGroup;
 
   @Input() storeFormSyncId: string;
   @Input() storeFormSyncDisabled: boolean;

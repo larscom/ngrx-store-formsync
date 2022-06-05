@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { storeFormSyncActions } from '@larscom/ngrx-store-formsync';
 import { Store } from '@ngrx/store';
 import { IRootState } from 'src/store/models/root-state';
@@ -84,32 +84,32 @@ import { IRootState } from 'src/store/models/root-state';
   ]
 })
 export class AppComponent implements OnInit {
-  form: FormGroup;
+  form: UntypedFormGroup;
   initialFormValue: any;
 
   readonly storeFormSyncId = '1';
 
   get tasks(): AbstractControl[] {
-    return (<FormArray>this.form.get('tasks')).controls;
+    return (<UntypedFormArray>this.form.get('tasks')).controls;
   }
 
   getGroupsFor(index: number): AbstractControl[] {
-    return (<FormArray>(<FormArray>this.form.get('tasks')).controls[index].get('groups')).controls;
+    return (<UntypedFormArray>(<UntypedFormArray>this.form.get('tasks')).controls[index].get('groups')).controls;
   }
 
   getDictionaryFor(index: number): AbstractControl[] {
-    return (<FormArray>(<FormArray>this.form.get('tasks')).controls[index].get('dictionary')).controls;
+    return (<UntypedFormArray>(<UntypedFormArray>this.form.get('tasks')).controls[index].get('dictionary')).controls;
   }
 
   getAttributesFor(taskIndex: number, groupIndex: number): AbstractControl[] {
-    return (<FormArray>(
-      (<FormArray>(<FormArray>this.form.get('tasks')).controls[taskIndex].get('groups')).controls[groupIndex].get(
+    return (<UntypedFormArray>(
+      (<UntypedFormArray>(<UntypedFormArray>this.form.get('tasks')).controls[taskIndex].get('groups')).controls[groupIndex].get(
         'attributes'
       )
     )).controls;
   }
 
-  constructor(private readonly builder: FormBuilder, private readonly store: Store<IRootState>) {}
+  constructor(private readonly builder: UntypedFormBuilder, private readonly store: Store<IRootState>) {}
 
   ngOnInit(): void {
     this.form = this.builder.group({
@@ -131,7 +131,7 @@ export class AppComponent implements OnInit {
     this.store.dispatch(storeFormSyncActions.setForm({ storeFormSyncId, value }));
   }
 
-  getTasks(): FormGroup[] {
+  getTasks(): UntypedFormGroup[] {
     return this.taskData().map((task) =>
       this.builder.group({
         taskid: task.taskid,
@@ -142,7 +142,7 @@ export class AppComponent implements OnInit {
     );
   }
 
-  getDictionaries(dictionaries: any[]): FormGroup[] {
+  getDictionaries(dictionaries: any[]): UntypedFormGroup[] {
     return dictionaries.map((dictionary) =>
       this.builder.group({
         content_id: dictionary.content_id,
@@ -157,7 +157,7 @@ export class AppComponent implements OnInit {
     );
   }
 
-  getGroups(groups: any[]): FormGroup[] {
+  getGroups(groups: any[]): UntypedFormGroup[] {
     return groups.map((group) =>
       this.builder.group({
         id: group.id,
@@ -167,7 +167,7 @@ export class AppComponent implements OnInit {
     );
   }
 
-  getAttributes(attributes: any[]): FormGroup[] {
+  getAttributes(attributes: any[]): UntypedFormGroup[] {
     return attributes.map((attribute) =>
       this.builder.group({
         name: attribute.name,
