@@ -1,7 +1,7 @@
 import { fakeAsync, tick } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { getMockStore, MockStore } from '@ngrx/store/testing';
-import { storeFormSyncActions, StoreFormSyncConfig, StoreFormSyncDirective, storeFormSyncKey } from '../../public_api';
+import { storeActions, StoreFormSyncConfig, StoreFormSyncDirective, storeFormSyncKey } from '../../public-api';
 import { defaultConfig } from '../store-form-sync-config';
 
 function createDirective(store: MockStore, config?: StoreFormSyncConfig, init = true): StoreFormSyncDirective {
@@ -22,7 +22,7 @@ function createDirective(store: MockStore, config?: StoreFormSyncConfig, init = 
 
 describe('StoreFormSyncDirective', () => {
   let store: MockStore<any>;
-  let dispatchSpy: jest.SpyInstance;
+  let dispatchSpy: jasmine.Spy;
   let directive: StoreFormSyncDirective;
 
   beforeEach(() => {
@@ -35,7 +35,7 @@ describe('StoreFormSyncDirective', () => {
         }
       }
     });
-    dispatchSpy = jest.spyOn(store, 'dispatch');
+    dispatchSpy = spyOn(store, 'dispatch');
   });
 
   afterEach(() => {
@@ -52,11 +52,11 @@ describe('StoreFormSyncDirective', () => {
 
     const { formGroup, storeFormSyncId } = directive;
 
-    const serializeSpy = jest.spyOn(defaultConfig, 'serialize');
+    const serializeSpy = spyOn(defaultConfig, 'serialize').and.callThrough();
 
     formGroup.get('field1')!.setValue('test');
 
-    const expected = storeFormSyncActions.patchForm({ storeFormSyncId, value: formGroup.value });
+    const expected = storeActions.patchForm({ storeFormSyncId, value: formGroup.value });
 
     expect(formGroup.valid).toBeFalsy();
     expect(dispatchSpy).toHaveBeenCalledWith(expected);
@@ -81,22 +81,16 @@ describe('StoreFormSyncDirective', () => {
     directive = createDirective(store, defaultConfig, false);
     (directive as any).storeFormSyncId = undefined;
 
-    try {
-      directive.ngOnInit();
-    } catch (e) {
-      expect((e as Error).message).toContain('storeFormSyncId is missing!');
-    }
+    expect(() => directive.ngOnInit()).toThrow(
+      Error('[@larscom/ngrx-store-formsync] You must provide a storeFormSyncId')
+    );
   });
 
   it('should throw error if formGroup is undefined', () => {
     directive = createDirective(store, defaultConfig, false);
     (directive as any).formGroup = undefined;
 
-    try {
-      directive.ngOnInit();
-    } catch (e) {
-      expect((e as Error).message).toContain('formGroup is missing!');
-    }
+    expect(() => directive.ngOnInit()).toThrow(Error('[@larscom/ngrx-store-formsync] FormGroup is undefined'));
   });
 
   it('should deserialize and patch form if store contains state', () => {
@@ -104,8 +98,8 @@ describe('StoreFormSyncDirective', () => {
 
     const { formGroup } = directive;
 
-    const formGroupPatchSpy = jest.spyOn(formGroup, 'patchValue');
-    const deserializeSpy = jest.spyOn(defaultConfig, 'deserialize');
+    const formGroupPatchSpy = spyOn(formGroup, 'patchValue');
+    const deserializeSpy = spyOn(defaultConfig, 'deserialize').and.callThrough();
 
     directive.ngOnInit();
 
@@ -119,7 +113,7 @@ describe('StoreFormSyncDirective', () => {
 
     const { formGroup } = directive;
 
-    const formGroupPatchSpy = jest.spyOn(formGroup, 'patchValue');
+    const formGroupPatchSpy = spyOn(formGroup, 'patchValue');
 
     directive.ngOnInit();
 
@@ -174,7 +168,7 @@ describe('StoreFormSyncDirective', () => {
 
     directive.onSubmit();
 
-    const expected = storeFormSyncActions.patchForm({ storeFormSyncId, value: formGroup.value });
+    const expected = storeActions.patchForm({ storeFormSyncId, value: formGroup.value });
 
     expect(formGroup.valid).toBeFalsy();
     expect(dispatchSpy).toHaveBeenCalledWith(expected);
@@ -190,7 +184,7 @@ describe('StoreFormSyncDirective', () => {
 
     directive.onSubmit();
 
-    const expected = storeFormSyncActions.patchForm({ storeFormSyncId, value: formGroup.value });
+    const expected = storeActions.patchForm({ storeFormSyncId, value: formGroup.value });
 
     expect(formGroup.valid).toBeTruthy();
     expect(dispatchSpy).toHaveBeenCalledWith(expected);
@@ -226,7 +220,7 @@ describe('StoreFormSyncDirective', () => {
 
     directive.onSubmit();
 
-    const expected = storeFormSyncActions.patchForm({ storeFormSyncId, value: formGroup.getRawValue() });
+    const expected = storeActions.patchForm({ storeFormSyncId, value: formGroup.getRawValue() });
 
     expect(formGroup.valid).toBeTruthy();
     expect(dispatchSpy).toHaveBeenCalledWith(expected);
@@ -243,7 +237,7 @@ describe('StoreFormSyncDirective', () => {
     formGroup.get('field2')!.setValue('test');
     formGroup.get('field2')!.disable();
 
-    const expected = storeFormSyncActions.patchForm({ storeFormSyncId, value: formGroup.getRawValue() });
+    const expected = storeActions.patchForm({ storeFormSyncId, value: formGroup.getRawValue() });
 
     expect(formGroup.valid).toBeFalsy();
     expect(dispatchSpy).toHaveBeenCalledWith(expected);

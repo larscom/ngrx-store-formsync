@@ -1,7 +1,7 @@
 {
   "name": "@larscom/ngrx-store-formsync",
   "version": "1.1.0",
-  "description": "Easily synchronize any reactive form to the @ngrx/store in just a few steps.",
+  "description": "Synchronize any reactive form to the @ngrx/store (Angular)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/larscom/ngrx-store-formsync"
@@ -17,7 +17,8 @@
     "rxjs",
     "reactive-forms",
     "forms",
-    "sync"
+    "sync",
+    "formsync"
   ],
   "author": "Lars Kniep",
   "license": "MIT",

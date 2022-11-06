@@ -1,4 +1,4 @@
-import { storeFormSyncKey } from '@larscom/ngrx-store-formsync';
+import { storeFormSyncKey } from 'projects/ngrx-store-formsync/src/public-api';
 import { storageSync } from '@larscom/ngrx-store-storagesync';
 import { ActionReducer } from '@ngrx/store';
 import { IRootState } from './models/root-state';

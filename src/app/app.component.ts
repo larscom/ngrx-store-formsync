@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { storeFormSyncActions } from '@larscom/ngrx-store-formsync';
+import { storeActions } from '@larscom/ngrx-store-formsync';
 import { Store } from '@ngrx/store';
-import { IRootState } from 'src/store/models/root-state';
+import { IRootState } from './store/models/root-state';
 
 @Component({
   selector: 'app-root',
@@ -84,7 +84,7 @@ import { IRootState } from 'src/store/models/root-state';
   ]
 })
 export class AppComponent implements OnInit {
-  form: UntypedFormGroup;
+  form!: UntypedFormGroup;
   initialFormValue: any;
 
   readonly storeFormSyncId = '1';
@@ -103,9 +103,9 @@ export class AppComponent implements OnInit {
 
   getAttributesFor(taskIndex: number, groupIndex: number): AbstractControl[] {
     return (<UntypedFormArray>(
-      (<UntypedFormArray>(<UntypedFormArray>this.form.get('tasks')).controls[taskIndex].get('groups')).controls[groupIndex].get(
-        'attributes'
-      )
+      (<UntypedFormArray>(<UntypedFormArray>this.form.get('tasks')).controls[taskIndex].get('groups')).controls[
+        groupIndex
+      ].get('attributes')
     )).controls;
   }
 
@@ -128,7 +128,7 @@ export class AppComponent implements OnInit {
 
     const value = JSON.parse(JSON.stringify(initialFormValue));
 
-    this.store.dispatch(storeFormSyncActions.setForm({ storeFormSyncId, value }));
+    this.store.dispatch(storeActions.setForm({ storeFormSyncId, value }));
   }
 
   getTasks(): UntypedFormGroup[] {

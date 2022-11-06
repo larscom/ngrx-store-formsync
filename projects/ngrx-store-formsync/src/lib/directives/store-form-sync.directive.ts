@@ -8,24 +8,14 @@ import { patchForm } from '../store/form.actions';
 import * as formSelectors from '../store/form.selectors';
 import { storeFormSyncConfigToken } from '../tokens/config';
 
-const requireInputs = (formGroup?: UntypedFormGroup, storeFormSyncId?: string): void => {
-  if (!formGroup) {
-    throw new Error('StoreFormSync: formGroup is missing!');
-  }
-
-  if (!storeFormSyncId) {
-    throw new Error('StoreFormSync: storeFormSyncId is missing!');
-  }
-};
-
 @Directive({
   selector: '[storeFormSync]'
 })
 export class StoreFormSyncDirective implements OnInit, OnDestroy {
-  @Input() formGroup: UntypedFormGroup;
+  @Input() formGroup!: UntypedFormGroup;
 
-  @Input() storeFormSyncId: string;
-  @Input() storeFormSyncDisabled: boolean;
+  @Input() storeFormSyncId!: string;
+  @Input() storeFormSyncDisabled!: boolean;
 
   constructor(
     @Inject(storeFormSyncConfigToken) private readonly config: StoreFormSyncConfig,
@@ -35,9 +25,9 @@ export class StoreFormSyncDirective implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   ngOnInit(): void {
-    const { storeFormSyncId, formGroup, store } = this;
+    this.validateInputs();
 
-    requireInputs(formGroup, storeFormSyncId);
+    const { storeFormSyncId, formGroup, store } = this;
 
     formGroup.valueChanges
       .pipe(
@@ -106,5 +96,10 @@ export class StoreFormSyncDirective implements OnInit, OnDestroy {
     }
 
     return true;
+  }
+
+  private validateInputs(): void {
+    if (!this.formGroup) throw new Error('[@larscom/ngrx-store-formsync] FormGroup is undefined');
+    if (!this.storeFormSyncId) throw new Error('[@larscom/ngrx-store-formsync] You must provide a storeFormSyncId');
   }
 }

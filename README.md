@@ -3,12 +3,12 @@
 [![npm-version](https://img.shields.io/npm/v/@larscom/ngrx-store-formsync.svg?label=npm)](https://www.npmjs.com/package/@larscom/ngrx-store-formsync)
 ![npm](https://img.shields.io/npm/dw/@larscom/ngrx-store-formsync)
 [![license](https://img.shields.io/npm/l/@larscom/ngrx-store-formsync.svg)](https://github.com/larscom/ngrx-store-formsync/blob/master/LICENSE)
-
-[![master](https://github.com/larscom/ngrx-store-formsync/actions/workflows/master.yml/badge.svg?branch=master)](https://github.com/larscom/ngrx-store-formsync/actions/workflows/master.yml)
-[![codeQL](https://github.com/larscom/ngrx-store-formsync/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/larscom/ngrx-store-formsync/actions/workflows/codeql-analysis.yml)
 [![codecov](https://codecov.io/gh/larscom/ngrx-store-formsync/branch/master/graph/badge.svg?token=KDMA88UI7L)](https://codecov.io/gh/larscom/ngrx-store-formsync)
 
-Easily synchronize any **reactive form** to the `@ngrx/store` in a few steps.
+[![master](https://github.com/larscom/ngrx-store-formsync/actions/workflows/master-build.yml/badge.svg?branch=master)](https://github.com/larscom/ngrx-store-formsync/actions/workflows/master-build.yml)
+[![codeQL](https://github.com/larscom/ngrx-store-formsync/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/larscom/ngrx-store-formsync/actions/workflows/codeql-analysis.yml)
+
+> Synchronize any **reactive form** to the **@ngrx/store** (Angular)
 
 ## Supports
 
@@ -17,7 +17,7 @@ Easily synchronize any **reactive form** to the `@ngrx/store` in a few steps.
 
 ## Dependencies
 
-`@larscom/ngrx-store-formsync` depends on [@ngrx/store](https://github.com/ngrx/store) and [Angular 12+](https://github.com/angular/angular).
+`@larscom/ngrx-store-formsync` depends on [@ngrx/store](https://github.com/ngrx/store) and [Angular](https://github.com/angular/angular).
 
 ## Installation
 
@@ -106,7 +106,7 @@ export interface StoreFormSyncConfig {
 
 ```ts
 import { Component } from '@angular/core';
-import { storeFormSyncSelectors } from '@larscom/ngrx-store-formsync'; // import selectors
+import { storeSelectors } from '@larscom/ngrx-store-formsync'; // import selectors
 import { Store, select } from '@ngrx/store';
 
 @Component({
@@ -120,7 +120,7 @@ import { Store, select } from '@ngrx/store';
   styleUrls: ['my-component.component.scss']
 })
 export class MyComponent {
-  myFormValue$ = this.store.pipe(select(storeFormSyncSelectors.selectFormValue({ storeFormSyncId: 'myId' })));
+  myFormValue$ = this.store.pipe(select(storeSelectors.selectFormValue({ storeFormSyncId: 'myId' })));
 
   constructor(private readonly store: Store) {}
 }
@@ -155,7 +155,7 @@ export class MyComponent {
 
 ```ts
 import { Component } from '@angular/core';
-import { storeFormSyncActions } from '@larscom/ngrx-store-formsync'; // import actions
+import { storeActions } from '@larscom/ngrx-store-formsync'; // import actions
 import { Store, select } from '@ngrx/store';
 
 @Component({
@@ -172,7 +172,7 @@ export class MyComponent {
       //lastName: 'Jansen'
     };
 
-   this.store.dispatch(storeFormSyncActions.patchForm({ storeFormSyncId: 'myId', value }));
+   this.store.dispatch(storeActions.patchForm({ storeFormSyncId: 'myId', value }));
   }
 }
 ```
@@ -181,7 +181,7 @@ export class MyComponent {
 
 ```ts
 import { Component } from '@angular/core';
-import { storeFormSyncActions } from '@larscom/ngrx-store-formsync'; // import actions
+import { storeActions } from '@larscom/ngrx-store-formsync'; // import actions
 import { Store, select } from '@ngrx/store';
 
 @Component({
@@ -193,7 +193,7 @@ export class MyComponent {
   constructor(private readonly store: Store) {}
 
   deleteForm(): void {
-    this.store.dispatch(storeFormSyncActions.deleteForm({ storeFormSyncId: 'myId'}));
+    this.store.dispatch(storeActions.deleteForm({ storeFormSyncId: 'myId'}));
   }
 }
 ```
@@ -214,7 +214,7 @@ export function storageSyncReducer(reducer: ActionReducer<IRootState>): ActionRe
         stateKey: storeFormSyncKey, // add storeFormSync as feature
         deserialize: (featureState: string) => JSON.parse(featureState) // override the deserializer if you are gonna use `Date` objects
       }
-    ], 
+    ],
     storage: window.localStorage // persist to localStorage
   });
 

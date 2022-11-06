@@ -1,10 +1,10 @@
-import { storeFormSyncKey, storeFormSyncSelectors, StoreFormSyncState } from '../../public_api';
+import { storeFormSyncKey, StoreFormSyncState, storeSelectors } from '../../public-api';
 
 interface RootState {
   [storeFormSyncKey]: StoreFormSyncState;
 }
 
-describe('StoreFormSyncSelectors', () => {
+describe('StoreSelectors', () => {
   const root: RootState = {
     [storeFormSyncKey]: {
       '1': {
@@ -15,12 +15,12 @@ describe('StoreFormSyncSelectors', () => {
 
   it('should select storeFormSync state from root state', () => {
     const { storeFormSync } = root;
-    expect(storeFormSyncSelectors.selectFormState(root)).toEqual(storeFormSync);
+    expect(storeSelectors.selectFormState(root)).toEqual(storeFormSync);
   });
 
   it('should select form value from storeFormSync', () => {
     const { storeFormSync } = root;
 
-    expect(storeFormSyncSelectors.selectFormValue({ storeFormSyncId: '1' })(root)).toEqual(storeFormSync['1']);
+    expect(storeSelectors.selectFormValue({ storeFormSyncId: '1' })(root)).toEqual(storeFormSync['1']);
   });
 });

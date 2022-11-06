@@ -1,5 +1,5 @@
-import { storeFormSyncReducer, initialState } from './form.reducer';
-import { storeFormSyncActions, StoreFormSyncState } from '../../public_api';
+import { storeActions, StoreFormSyncState } from '../../public-api';
+import { initialState, storeFormSyncReducer } from './form.reducer';
 
 describe('StoreFormSyncReducer', () => {
   it('should return the initial state', () => {
@@ -19,7 +19,7 @@ describe('StoreFormSyncReducer', () => {
 
     const updatedState = storeFormSyncReducer(
       state,
-      storeFormSyncActions.setForm({ storeFormSyncId, value: { newField: 'value' } })
+      storeActions.setForm({ storeFormSyncId, value: { newField: 'value' } })
     );
 
     const expected: StoreFormSyncState = {
@@ -49,7 +49,7 @@ describe('StoreFormSyncReducer', () => {
 
     const updatedState = storeFormSyncReducer(
       state,
-      storeFormSyncActions.patchForm({ storeFormSyncId, value: { field1: 'newValue', array: ['1'] } })
+      storeActions.patchForm({ storeFormSyncId, value: { field1: 'newValue', array: ['1'] } })
     );
 
     const expected: StoreFormSyncState = {
@@ -71,7 +71,7 @@ describe('StoreFormSyncReducer', () => {
 
     const updatedState = storeFormSyncReducer(
       initialState,
-      storeFormSyncActions.patchForm({ storeFormSyncId, value: { field1: 'newValue' } })
+      storeActions.patchForm({ storeFormSyncId, value: { field1: 'newValue' } })
     );
 
     const expected: StoreFormSyncState = {
@@ -83,7 +83,7 @@ describe('StoreFormSyncReducer', () => {
     expect(updatedState).toEqual(expected);
   });
 
-  it('should DELETE form value for storeFormSyncId', () => {
+  it('should DELETE (set to undefined) form value for storeFormSyncId', () => {
     const storeFormSyncId = '1';
     const state: StoreFormSyncState = {
       extra: {
@@ -96,12 +96,14 @@ describe('StoreFormSyncReducer', () => {
       }
     };
 
-    const updatedState = storeFormSyncReducer(state, storeFormSyncActions.deleteForm({ storeFormSyncId }));
+    const updatedState = storeFormSyncReducer(state, storeActions.deleteForm({ storeFormSyncId }));
+    console.info(updatedState);
 
     const expected: StoreFormSyncState = {
       extra: {
         field: 'value'
-      }
+      },
+      [storeFormSyncId]: undefined
     };
 
     expect(updatedState).toEqual(expected);

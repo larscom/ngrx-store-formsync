@@ -4,4 +4,4 @@ import { StoreFormSyncState } from './form.reducer';
 
 export const selectFormState = createFeatureSelector<StoreFormSyncState>(storeFormSyncKey);
 export const selectFormValue = ({ storeFormSyncId }: { storeFormSyncId: string }) =>
-  createSelector(selectFormState, (state) => state[storeFormSyncId]);
+  createSelector(selectFormState, (state) => ({ ...state[storeFormSyncId] }));
