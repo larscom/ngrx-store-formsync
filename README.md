@@ -130,7 +130,7 @@ export class MyComponent {
 
 ```ts
 import { Component } from '@angular/core';
-import { storeFormSyncActions } from '@larscom/ngrx-store-formsync'; // import actions
+import { storeActions } from '@larscom/ngrx-store-formsync'; // import actions
 import { Store, select } from '@ngrx/store';
 
 @Component({
@@ -146,7 +146,7 @@ export class MyComponent {
       firstName: 'Jan',
       lastName: 'Jansen'
     };
-    this.store.dispatch(storeFormSyncActions.setForm({ storeFormSyncId: 'myId', value }));
+    this.store.dispatch(storeActions.setForm({ storeFormSyncId: 'myId', value }));
   }
 }
 ```
