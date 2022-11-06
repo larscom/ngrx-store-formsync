@@ -1,6 +1,6 @@
 {
   "name": "@larscom/ngrx-store-formsync",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Synchronize any reactive form to @ngrx/store (Angular)",
   "repository": {
     "type": "git",
