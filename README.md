@@ -8,12 +8,12 @@
 [![master](https://github.com/larscom/ngrx-store-formsync/actions/workflows/master-build.yml/badge.svg?branch=master)](https://github.com/larscom/ngrx-store-formsync/actions/workflows/master-build.yml)
 [![codeQL](https://github.com/larscom/ngrx-store-formsync/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/larscom/ngrx-store-formsync/actions/workflows/codeql-analysis.yml)
 
-> Synchronize any **reactive form** to the **@ngrx/store** (Angular)
+> Synchronize any **reactive form** to **@ngrx/store** (Angular)
 
 ## Supports
 
 - &#10003; Reactive Forms only
-- &#10003; [Persisting State](#Persisting-State) (additional library)
+- &#10003; [Persisting State](#Persisting-State) (needs additional library)
 
 ## Dependencies
 
