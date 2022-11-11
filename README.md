@@ -33,14 +33,18 @@ npm i --save @larscom/ngrx-store-formsync
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { StoreModule } from '@ngrx/store';
-import { StoreFormSyncModule } from '@larscom/ngrx-store-formsync';
+import { StoreFormSyncModule, StoreFormSyncConfig } from '@larscom/ngrx-store-formsync';
+
+const config: StoreFormSyncConfig = {
+  syncValidOnly: true
+};
 
 @NgModule({
   imports: [
     BrowserModule,
     StoreModule.forRoot(),
     // import StoreFormSyncModule.forRoot() only once
-    StoreFormSyncModule.forRoot()
+    StoreFormSyncModule.forRoot(config)
   ]
 })
 export class AppModule {}
@@ -99,6 +103,21 @@ export interface StoreFormSyncConfig {
 | `formGroup`             | FormGroup | undefined | yes      | The form group which needs to get synced to the @ngrx/store. |
 | `storeFormSyncId`       | string    | undefined | yes      | The unique ID for the form group.                            |
 | `storeFormSyncDisabled` | boolean   | false     | no       | Whether the form group value should sync to the @ngrx/store. |
+
+## Override global config
+
+Config can be overriden at component level by adding a provider to the providers array.
+
+```ts
+import { STORE_FORM_SYNC_CONFIG } from '@larscom/ngrx-store-formsync';
+
+@Component({
+  selector: 'app-component',
+  template: `<div>Hello!</div>`,
+  providers: [{ provide: STORE_FORM_SYNC_CONFIG, useValue: { syncValidOnly: true } }]
+})
+export class Component {}
+```
 
 ## Managing form with actions and selectors
 
