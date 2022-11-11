@@ -27,7 +27,7 @@ npm i --save @larscom/ngrx-store-formsync
 
 ## Usage
 
-1. Import `StoreFormSyncModule.forRoot()` once inside a root module. For every other module, use `StoreFormSyncModule.forFeature()`
+1. Import `StoreFormSyncModule.forRoot()` once inside a root module. For every other module, just use `StoreFormSyncModule`
 
 ```ts
 import { NgModule } from '@angular/core';

@@ -97,7 +97,6 @@ describe('StoreFormSyncReducer', () => {
     };
 
     const updatedState = storeFormSyncReducer(state, storeActions.deleteForm({ storeFormSyncId }));
-    console.info(updatedState);
 
     const expected: StoreFormSyncState = {
       extra: {

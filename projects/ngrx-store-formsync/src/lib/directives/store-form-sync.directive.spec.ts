@@ -1,40 +1,35 @@
-import { fakeAsync, tick } from '@angular/core/testing';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { getMockStore, MockStore } from '@ngrx/store/testing';
-import { storeActions, StoreFormSyncConfig, StoreFormSyncDirective, storeFormSyncKey } from '../../public-api';
-import { defaultConfig } from '../store-form-sync-config';
-
-function createDirective(store: MockStore, config?: StoreFormSyncConfig, init = true): StoreFormSyncDirective {
-  const directive = new StoreFormSyncDirective(config || defaultConfig, store);
-
-  const field1 = new FormControl(null, Validators.required);
-  const field2 = new FormControl(null, Validators.required);
-
-  directive.formGroup = new FormGroup({ field1, field2 });
-  directive.storeFormSyncId = '1';
-
-  if (init) {
-    directive.ngOnInit();
-  }
-
-  return directive;
-}
+import { of } from 'rxjs';
+import { StoreFormSyncConfig } from '../store-form-sync-config';
+import * as storeActions from '../store/form.actions';
+import { storeFormSyncKey } from '../store/form.constants';
+import { StoreFormSyncDirective } from './store-form-sync.directive';
 
 describe('StoreFormSyncDirective', () => {
+  const storeFormSyncId = '123';
+
+  const firstNameField = 'firstName';
+  const lastNameField = 'lastName';
+
+  const initialState = {
+    [storeFormSyncKey]: {
+      [storeFormSyncId]: {
+        [firstNameField]: 'foo',
+        [lastNameField]: 'bar'
+      }
+    }
+  };
+
+  let formBuilder: UntypedFormBuilder;
   let store: MockStore<any>;
   let dispatchSpy: jasmine.Spy;
+
   let directive: StoreFormSyncDirective;
 
   beforeEach(() => {
-    store = getMockStore({
-      initialState: {
-        [storeFormSyncKey]: {
-          ['1']: {
-            field: 'value'
-          }
-        }
-      }
-    });
+    formBuilder = new UntypedFormBuilder();
+    store = getMockStore({ initialState });
     dispatchSpy = spyOn(store, 'dispatch');
   });
 
@@ -42,204 +37,233 @@ describe('StoreFormSyncDirective', () => {
     directive.ngOnDestroy();
   });
 
-  it('should create directive', () => {
-    directive = createDirective(store);
-    expect(directive).toBeTruthy();
-  });
+  describe('When directive is initializing', () => {
+    it('should throw error if storeFormSyncId is undefined', () => {
+      directive = new StoreFormSyncDirective({}, store);
+      directive.formGroup = formBuilder.group({});
 
-  it('should serialize and dispatch with default configuration', () => {
-    directive = createDirective(store, defaultConfig);
-
-    const { formGroup, storeFormSyncId } = directive;
-
-    const serializeSpy = spyOn(defaultConfig, 'serialize').and.callThrough();
-
-    formGroup.get('field1')!.setValue('test');
-
-    const expected = storeActions.patchForm({ storeFormSyncId, value: formGroup.value });
-
-    expect(formGroup.valid).toBeFalsy();
-    expect(dispatchSpy).toHaveBeenCalledWith(expected);
-    expect(serializeSpy).toHaveBeenCalledWith({ field1: 'test', field2: null });
-  });
-
-  it('should not dispatch after directive is destroyed', fakeAsync(() => {
-    directive = createDirective(store, defaultConfig);
-
-    directive.ngOnDestroy();
-
-    const { formGroup } = directive;
-
-    formGroup.get('field1')!.setValue('test');
-
-    tick(100);
-
-    expect(dispatchSpy).not.toHaveBeenCalled();
-  }));
-
-  it('should throw error if storeFormSyncId is undefined', () => {
-    directive = createDirective(store, defaultConfig, false);
-    (directive as any).storeFormSyncId = undefined;
-
-    expect(() => directive.ngOnInit()).toThrow(
-      Error('[@larscom/ngrx-store-formsync] You must provide a storeFormSyncId')
-    );
-  });
-
-  it('should throw error if formGroup is undefined', () => {
-    directive = createDirective(store, defaultConfig, false);
-    (directive as any).formGroup = undefined;
-
-    expect(() => directive.ngOnInit()).toThrow(Error('[@larscom/ngrx-store-formsync] FormGroup is undefined'));
-  });
-
-  it('should deserialize and patch form if store contains state', () => {
-    directive = createDirective(store, defaultConfig, false);
-
-    const { formGroup } = directive;
-
-    const formGroupPatchSpy = spyOn(formGroup, 'patchValue');
-    const deserializeSpy = spyOn(defaultConfig, 'deserialize').and.callThrough();
-
-    directive.ngOnInit();
-
-    expect(formGroupPatchSpy).toHaveBeenCalledWith({ field: 'value' }, { emitEvent: false });
-    expect(deserializeSpy).toHaveBeenCalledWith(JSON.stringify({ field: 'value' }));
-  });
-
-  it('should NOT patch form if store is updated and storeFormSyncDisabled is true', () => {
-    directive = createDirective(store, defaultConfig, false);
-    directive.storeFormSyncDisabled = true;
-
-    const { formGroup } = directive;
-
-    const formGroupPatchSpy = spyOn(formGroup, 'patchValue');
-
-    directive.ngOnInit();
-
-    expect(formGroupPatchSpy).not.toHaveBeenCalled();
-  });
-
-  it('should NOT dispatch if form value changed and storeFormSyncDisabled is true', () => {
-    directive = createDirective(store);
-    directive.storeFormSyncDisabled = true;
-
-    const { formGroup } = directive;
-
-    formGroup.get('field1')!.setValue('test');
-
-    expect(dispatchSpy).not.toHaveBeenCalled();
-  });
-
-  it('should not dispatch with invalid form status', () => {
-    directive = createDirective(store, { ...defaultConfig, syncValidOnly: true });
-
-    const { formGroup } = directive;
-
-    formGroup.get('field1')!.setValue('test');
-
-    expect(formGroup.valid).toBeFalsy();
-    expect(dispatchSpy).not.toHaveBeenCalled();
-  });
-
-  it('should not dispatch on value change when syncOnSubmit is enabled', () => {
-    directive = createDirective(store, { ...defaultConfig, syncOnSubmit: true });
-
-    const { formGroup } = directive;
-
-    formGroup.get('field1')!.setValue('test');
-
-    expect(dispatchSpy).not.toHaveBeenCalled();
-  });
-
-  it('should not dispatch on submit if storeFormSyncDisabled is true and syncOnSubmit is enabled', () => {
-    directive = createDirective(store, { ...defaultConfig, syncOnSubmit: true });
-    directive.storeFormSyncDisabled = true;
-
-    directive.onSubmit();
-
-    expect(dispatchSpy).not.toHaveBeenCalled();
-  });
-
-  it('should dispatch on submit when syncOnSubmit is enabled', () => {
-    directive = createDirective(store, { ...defaultConfig, syncOnSubmit: true });
-
-    const { formGroup, storeFormSyncId } = directive;
-
-    directive.onSubmit();
-
-    const expected = storeActions.patchForm({ storeFormSyncId, value: formGroup.value });
-
-    expect(formGroup.valid).toBeFalsy();
-    expect(dispatchSpy).toHaveBeenCalledWith(expected);
-  });
-
-  it('should dispatch on submit and valid form only', () => {
-    directive = createDirective(store, { ...defaultConfig, syncOnSubmit: true, syncValidOnly: true });
-
-    const { formGroup, storeFormSyncId } = directive;
-
-    formGroup.get('field1')!.setValue('test');
-    formGroup.get('field2')!.setValue('test');
-
-    directive.onSubmit();
-
-    const expected = storeActions.patchForm({ storeFormSyncId, value: formGroup.value });
-
-    expect(formGroup.valid).toBeTruthy();
-    expect(dispatchSpy).toHaveBeenCalledWith(expected);
-  });
-
-  it('should not dispatch on submit with invalid form', () => {
-    directive = createDirective(store, { ...defaultConfig, syncOnSubmit: true, syncValidOnly: true });
-
-    const { formGroup } = directive;
-
-    formGroup.get('field1')!.setValue('test');
-
-    directive.onSubmit();
-
-    expect(formGroup.valid).toBeFalsy();
-    expect(dispatchSpy).not.toHaveBeenCalled();
-  });
-
-  it('should dispatch raw value on submit and valid form only', () => {
-    directive = createDirective(store, {
-      ...defaultConfig,
-      syncRawValue: true,
-      syncOnSubmit: true,
-      syncValidOnly: true
+      expect(() => directive.ngOnInit()).toThrow(
+        Error('[@larscom/ngrx-store-formsync] You must provide a storeFormSyncId')
+      );
     });
 
-    const { formGroup, storeFormSyncId } = directive;
+    it('should throw error if formGroup is undefined', () => {
+      directive = new StoreFormSyncDirective({}, store);
 
-    formGroup.get('field1')!.setValue('test');
-    formGroup.get('field1')!.disable();
-
-    formGroup.get('field2')!.setValue('test');
-
-    directive.onSubmit();
-
-    const expected = storeActions.patchForm({ storeFormSyncId, value: formGroup.getRawValue() });
-
-    expect(formGroup.valid).toBeTruthy();
-    expect(dispatchSpy).toHaveBeenCalledWith(expected);
+      expect(() => directive.ngOnInit()).toThrow(Error('[@larscom/ngrx-store-formsync] FormGroup is undefined'));
+    });
   });
 
-  it('should sync disabled controls', () => {
-    directive = createDirective(store, { ...defaultConfig, syncRawValue: true });
+  describe('When FormGroup value changes', () => {
+    it('should not serialize/dispatch after directive is destroyed', () => {
+      const config: Partial<StoreFormSyncConfig> = {
+        serialize: jasmine.createSpy()
+      };
+      directive = new StoreFormSyncDirective(config, store);
+      directive.storeFormSyncId = storeFormSyncId;
+      directive.formGroup = formBuilder.group({
+        [firstNameField]: undefined
+      });
 
-    const { formGroup, storeFormSyncId } = directive;
+      // initialize
+      directive.ngOnInit();
 
-    formGroup.get('field1')!.setValue('test');
-    formGroup.get('field1')!.disable();
+      // destroy
+      directive.ngOnDestroy();
 
-    formGroup.get('field2')!.setValue('test');
-    formGroup.get('field2')!.disable();
+      directive.formGroup.get(firstNameField)!.setValue('test');
 
-    const expected = storeActions.patchForm({ storeFormSyncId, value: formGroup.getRawValue() });
+      expect(directive.formGroup.valid).toBeTrue();
+      expect(dispatchSpy).not.toHaveBeenCalled();
+      expect(config.serialize).not.toHaveBeenCalled();
+    });
 
-    expect(formGroup.valid).toBeFalsy();
-    expect(dispatchSpy).toHaveBeenCalledWith(expected);
+    it('should not serialize/dispatch if storeFormSyncDisabled is true', () => {
+      const config: Partial<StoreFormSyncConfig> = {
+        serialize: jasmine.createSpy()
+      };
+      directive = new StoreFormSyncDirective(config, store);
+      directive.storeFormSyncId = storeFormSyncId;
+      directive.formGroup = formBuilder.group({
+        [firstNameField]: undefined
+      });
+
+      // set storeFormSyncDisabled
+      directive.storeFormSyncDisabled = true;
+
+      // initialize
+      directive.ngOnInit();
+
+      directive.formGroup.get(firstNameField)!.setValue('test');
+
+      expect(directive.formGroup.valid).toBeTrue();
+      expect(dispatchSpy).not.toHaveBeenCalled();
+      expect(config.serialize).not.toHaveBeenCalled();
+    });
+
+    it('should not serialize/dispatch if syncOnSubmit is true', () => {
+      const config: Partial<StoreFormSyncConfig> = {
+        serialize: jasmine.createSpy(),
+        syncOnSubmit: true
+      };
+      directive = new StoreFormSyncDirective(config, store);
+      directive.storeFormSyncId = storeFormSyncId;
+      directive.formGroup = formBuilder.group({
+        [firstNameField]: undefined
+      });
+
+      // initialize
+      directive.ngOnInit();
+
+      directive.formGroup.get(firstNameField)!.setValue('test');
+
+      expect(directive.formGroup.valid).toBeTrue();
+      expect(dispatchSpy).not.toHaveBeenCalled();
+      expect(config.serialize).not.toHaveBeenCalled();
+    });
+
+    it('should not serialize/dispatch if syncValidOnly is true', () => {
+      const config: Partial<StoreFormSyncConfig> = {
+        serialize: jasmine.createSpy(),
+        syncValidOnly: true
+      };
+      directive = new StoreFormSyncDirective(config, store);
+      directive.storeFormSyncId = storeFormSyncId;
+      directive.formGroup = formBuilder.group({
+        [firstNameField]: ['test', Validators.minLength(3)]
+      });
+
+      // initialize
+      directive.ngOnInit();
+
+      directive.formGroup.get(firstNameField)!.setValue('t');
+
+      expect(directive.formGroup.valid).toBeFalse();
+      expect(dispatchSpy).not.toHaveBeenCalled();
+      expect(config.serialize).not.toHaveBeenCalled();
+    });
+
+    it('should serialize and dispatch', () => {
+      const config: Partial<StoreFormSyncConfig> = {
+        serialize: jasmine.createSpy().and.returnValue(JSON.stringify({ [firstNameField]: 'test' }))
+      };
+      directive = new StoreFormSyncDirective(config, store);
+      directive.storeFormSyncId = storeFormSyncId;
+      directive.formGroup = formBuilder.group({
+        [firstNameField]: undefined
+      });
+
+      // initialize
+      directive.ngOnInit();
+
+      directive.formGroup.get(firstNameField)!.setValue('test');
+
+      expect(directive.formGroup.valid).toBeTrue();
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        storeActions.patchForm({ storeFormSyncId, value: { [firstNameField]: 'test' } })
+      );
+      expect(config.serialize).toHaveBeenCalledWith({ [firstNameField]: 'test' });
+    });
+
+    it('should serialize and dispatch raw form value', () => {
+      const config: Partial<StoreFormSyncConfig> = {
+        serialize: jasmine
+          .createSpy()
+          .and.returnValue(JSON.stringify({ [firstNameField]: 'foo', [lastNameField]: 'bar' })),
+        syncRawValue: true
+      };
+      directive = new StoreFormSyncDirective(config, store);
+      directive.storeFormSyncId = storeFormSyncId;
+      directive.formGroup = formBuilder.group({
+        [firstNameField]: [{ value: undefined, disabled: true }],
+        [lastNameField]: [{ value: undefined }]
+      });
+
+      expect(directive.formGroup.get(firstNameField)?.disabled).toBeTrue();
+      expect(directive.formGroup.get(lastNameField)?.disabled).toBeFalse();
+
+      // initialize
+      directive.ngOnInit();
+
+      directive.formGroup.get(lastNameField)!.setValue('bar');
+
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        storeActions.patchForm({ storeFormSyncId, value: { [firstNameField]: 'foo', [lastNameField]: 'bar' } })
+      );
+      expect(config.serialize).toHaveBeenCalledWith({ [firstNameField]: 'foo', [lastNameField]: 'bar' });
+    });
   });
+
+  describe('When the store is updated', () => {
+    it('should not deserialize/dispatch after directive is destroyed', () => {
+      const formGroupSpy = jasmine.createSpyObj('FormGroup', ['patchValue'], {
+        valueChanges: of()
+      });
+      const deserializeSpy = jasmine.createSpy();
+      const config: Partial<StoreFormSyncConfig> = {
+        deserialize: deserializeSpy
+      };
+      directive = new StoreFormSyncDirective(config, store);
+      directive.storeFormSyncId = storeFormSyncId;
+      directive.formGroup = formGroupSpy;
+
+      // initialize
+      directive.ngOnInit();
+
+      expect(deserializeSpy).toHaveBeenCalled();
+      expect(formGroupSpy.patchValue).toHaveBeenCalled();
+
+      formGroupSpy.patchValue.calls.reset();
+      deserializeSpy.calls.reset();
+
+      // destroy
+      directive.ngOnDestroy();
+
+      store.setState(initialState);
+
+      expect(formGroupSpy.patchValue).not.toHaveBeenCalled();
+      expect(deserializeSpy).not.toHaveBeenCalled();
+    });
+
+    it('should not deserialize/dispatch when storeFormSyncDisabled is true', () => {
+      const formGroupSpy = jasmine.createSpyObj('FormGroup', ['patchValue'], { valueChanges: of() });
+      const config: Partial<StoreFormSyncConfig> = {
+        deserialize: jasmine.createSpy()
+      };
+      directive = new StoreFormSyncDirective(config, store);
+      directive.storeFormSyncId = storeFormSyncId;
+      directive.formGroup = formGroupSpy;
+
+      // set storeFormSyncDisabled
+      directive.storeFormSyncDisabled = true;
+
+      // initialize
+      directive.ngOnInit();
+
+      expect(formGroupSpy.patchValue).not.toHaveBeenCalled();
+      expect(config.deserialize).not.toHaveBeenCalled();
+    });
+
+    it('should deserialize and patch formGroup', () => {
+      const formGroupSpy = jasmine.createSpyObj('FormGroup', ['patchValue'], { valueChanges: of() });
+      const config: Partial<StoreFormSyncConfig> = {
+        deserialize: jasmine.createSpy().and.returnValue({ [firstNameField]: 'test' })
+      };
+      directive = new StoreFormSyncDirective(config, store);
+      directive.storeFormSyncId = storeFormSyncId;
+      directive.formGroup = formGroupSpy;
+
+      // initialize
+      directive.ngOnInit();
+
+      expect(formGroupSpy.patchValue).toHaveBeenCalledWith({ [firstNameField]: 'test' }, { emitEvent: false });
+      expect(config.deserialize).toHaveBeenCalledWith('{"firstName":"foo","lastName":"bar"}');
+    });
+  });
+
+  // describe('When Submit action is fired', () => {
+  //   it('placeholder', () => {
+  //     expect(true).toBeTrue();
+  //   });
+  // });
 });

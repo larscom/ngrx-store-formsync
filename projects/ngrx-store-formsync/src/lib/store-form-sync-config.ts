@@ -25,16 +25,3 @@ export interface StoreFormSyncConfig {
    */
   deserialize: (formValue: string) => any;
 }
-
-const dateRegExp = /(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/;
-export const defaultConfig: StoreFormSyncConfig = {
-  syncOnSubmit: false,
-  syncRawValue: false,
-  syncValidOnly: false,
-  serialize: (formValue: any): string => JSON.stringify(formValue),
-  deserialize: (formValue: string): any => {
-    return JSON.parse(formValue, (_: string, value: string) =>
-      dateRegExp.test(String(value)) ? new Date(value) : value
-    );
-  }
-};

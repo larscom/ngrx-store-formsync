@@ -1,10 +1,10 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { StoreModule } from '@ngrx/store';
 import { StoreFormSyncDirective } from './directives/store-form-sync.directive';
-import { defaultConfig, StoreFormSyncConfig } from './store-form-sync-config';
+import { StoreFormSyncConfig } from './store-form-sync-config';
 import { storeFormSyncKey } from './store/form.constants';
 import { storeFormSyncReducer } from './store/form.reducer';
-import { storeFormSyncConfigToken } from './tokens/config';
+import { STORE_FORM_SYNC_CONFIG } from './tokens/config';
 import { storeFormSyncReducerToken } from './tokens/reducer';
 
 @NgModule({
@@ -13,12 +13,7 @@ import { storeFormSyncReducerToken } from './tokens/reducer';
   exports: [StoreFormSyncDirective]
 })
 export class StoreFormSyncModule {
-  /**
-   * Import once inside root module
-   */
   static forRoot(config?: Partial<StoreFormSyncConfig>): ModuleWithProviders<StoreFormSyncModule> {
-    const userConfig = config || {};
-
     return {
       ngModule: StoreFormSyncModule,
       providers: [
@@ -26,20 +21,8 @@ export class StoreFormSyncModule {
           provide: storeFormSyncReducerToken,
           useValue: storeFormSyncReducer
         },
-        { provide: storeFormSyncConfigToken, useValue: { ...defaultConfig, ...userConfig } }
+        { provide: STORE_FORM_SYNC_CONFIG, useValue: config || {} }
       ]
-    };
-  }
-
-  /**
-   * Import in every feature module
-   */
-  static forFeature(config?: Partial<StoreFormSyncConfig>): ModuleWithProviders<StoreFormSyncModule> {
-    const userConfig = config || {};
-
-    return {
-      ngModule: StoreFormSyncModule,
-      providers: [{ provide: storeFormSyncConfigToken, useValue: { ...defaultConfig, ...userConfig } }]
     };
   }
 }
