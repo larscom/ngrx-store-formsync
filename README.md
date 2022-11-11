@@ -35,7 +35,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { StoreModule } from '@ngrx/store';
 import { StoreFormSyncModule, StoreFormSyncConfig } from '@larscom/ngrx-store-formsync';
 
-const config: StoreFormSyncConfig = {
+const config: Partial<StoreFormSyncConfig> = {
   syncValidOnly: true
 };
 
