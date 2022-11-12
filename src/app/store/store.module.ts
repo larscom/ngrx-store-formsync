@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { StoreFormSyncModule } from 'projects/ngrx-store-formsync/src/public-api';
+import { StoreFormSyncModule } from '@larscom/ngrx-store-formsync';
 import { MetaReducer, StoreModule as NgrxStoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { storageSyncReducer } from './storage-sync.reducer';
