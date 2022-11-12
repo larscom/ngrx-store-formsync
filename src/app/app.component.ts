@@ -10,7 +10,7 @@ import { IRootState } from './store/models/root-state';
     <div class="container-fluid root">
       <button class="btn btn-primary" (click)="reset()">Reset</button>
 
-      <form [formGroup]="form" storeFormSync [storeFormSyncId]="storeFormSyncId">
+      <form [formGroup]="form" [storeFormSyncId]="storeFormSyncId">
         <input type="text" formControlName="lessoncode" />
         <input type="text" formControlName="date" />
         <input type="text" formControlName="countrycode" />

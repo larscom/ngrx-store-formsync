@@ -55,11 +55,8 @@ describe('StoreFormSyncDirective', () => {
   });
 
   describe('When FormGroup value changes', () => {
-    it('should not serialize/dispatch after directive is destroyed', () => {
-      const config: Partial<StoreFormSyncConfig> = {
-        serialize: jasmine.createSpy('serialize')
-      };
-      directive = new StoreFormSyncDirective(config, store);
+    it('should not dispatch after directive is destroyed', () => {
+      directive = new StoreFormSyncDirective({}, store);
       directive.storeFormSyncId = storeFormSyncId;
       directive.formGroup = formBuilder.group({
         [firstNameField]: undefined
@@ -75,14 +72,10 @@ describe('StoreFormSyncDirective', () => {
 
       expect(directive.formGroup.valid).toBeTrue();
       expect(dispatchSpy).not.toHaveBeenCalled();
-      expect(config.serialize).not.toHaveBeenCalled();
     });
 
-    it('should not serialize/dispatch if storeFormSyncDisabled is true', () => {
-      const config: Partial<StoreFormSyncConfig> = {
-        serialize: jasmine.createSpy('serialize')
-      };
-      directive = new StoreFormSyncDirective(config, store);
+    it('should not dispatch if storeFormSyncDisabled is true', () => {
+      directive = new StoreFormSyncDirective({}, store);
       directive.storeFormSyncId = storeFormSyncId;
       directive.formGroup = formBuilder.group({
         [firstNameField]: undefined
@@ -98,12 +91,10 @@ describe('StoreFormSyncDirective', () => {
 
       expect(directive.formGroup.valid).toBeTrue();
       expect(dispatchSpy).not.toHaveBeenCalled();
-      expect(config.serialize).not.toHaveBeenCalled();
     });
 
-    it('should not serialize/dispatch if syncOnSubmit is true', () => {
+    it('should not dispatch if syncOnSubmit is true', () => {
       const config: Partial<StoreFormSyncConfig> = {
-        serialize: jasmine.createSpy('serialize'),
         syncOnSubmit: true
       };
       directive = new StoreFormSyncDirective(config, store);
@@ -119,12 +110,10 @@ describe('StoreFormSyncDirective', () => {
 
       expect(directive.formGroup.valid).toBeTrue();
       expect(dispatchSpy).not.toHaveBeenCalled();
-      expect(config.serialize).not.toHaveBeenCalled();
     });
 
-    it('should not serialize/dispatch if syncValidOnly is true', () => {
+    it('should not dispatch if syncValidOnly is true', () => {
       const config: Partial<StoreFormSyncConfig> = {
-        serialize: jasmine.createSpy('serialize'),
         syncValidOnly: true
       };
       directive = new StoreFormSyncDirective(config, store);
@@ -140,14 +129,10 @@ describe('StoreFormSyncDirective', () => {
 
       expect(directive.formGroup.valid).toBeFalse();
       expect(dispatchSpy).not.toHaveBeenCalled();
-      expect(config.serialize).not.toHaveBeenCalled();
     });
 
-    it('should serialize and dispatch', () => {
-      const config: Partial<StoreFormSyncConfig> = {
-        serialize: jasmine.createSpy('serialize').and.returnValue(JSON.stringify({ [firstNameField]: 'test' }))
-      };
-      directive = new StoreFormSyncDirective(config, store);
+    it('should dispatch', () => {
+      directive = new StoreFormSyncDirective({}, store);
       directive.storeFormSyncId = storeFormSyncId;
       directive.formGroup = formBuilder.group({
         [firstNameField]: undefined
@@ -162,14 +147,10 @@ describe('StoreFormSyncDirective', () => {
       expect(dispatchSpy).toHaveBeenCalledWith(
         storeActions.patchForm({ storeFormSyncId, value: { [firstNameField]: 'test' } })
       );
-      expect(config.serialize).toHaveBeenCalledWith({ [firstNameField]: 'test' });
     });
 
-    it('should serialize and dispatch raw form value', () => {
+    it('should dispatch raw form value', () => {
       const config: Partial<StoreFormSyncConfig> = {
-        serialize: jasmine
-          .createSpy('serialize')
-          .and.returnValue(JSON.stringify({ [firstNameField]: 'foo', [lastNameField]: 'bar' })),
         syncRawValue: true
       };
       directive = new StoreFormSyncDirective(config, store);
@@ -190,7 +171,6 @@ describe('StoreFormSyncDirective', () => {
       expect(dispatchSpy).toHaveBeenCalledWith(
         storeActions.patchForm({ storeFormSyncId, value: { [firstNameField]: 'foo', [lastNameField]: 'bar' } })
       );
-      expect(config.serialize).toHaveBeenCalledWith({ [firstNameField]: 'foo', [lastNameField]: 'bar' });
     });
   });
 
@@ -262,11 +242,8 @@ describe('StoreFormSyncDirective', () => {
   });
 
   describe('When Submit action is fired', () => {
-    it('should not serialize/dispatch if storeFormSyncDisabled is true', () => {
-      const config: Partial<StoreFormSyncConfig> = {
-        serialize: jasmine.createSpy('serialize')
-      };
-      directive = new StoreFormSyncDirective(config, store);
+    it('should not dispatch if storeFormSyncDisabled is true', () => {
+      directive = new StoreFormSyncDirective({}, store);
       directive.storeFormSyncId = storeFormSyncId;
       directive.formGroup = formBuilder.group({
         [firstNameField]: 'test'
@@ -280,12 +257,10 @@ describe('StoreFormSyncDirective', () => {
 
       expect(directive.formGroup.valid).toBeTrue();
       expect(dispatchSpy).not.toHaveBeenCalled();
-      expect(config.serialize).not.toHaveBeenCalled();
     });
 
-    it('should not serialize/dispatch if syncValidOnly is true', () => {
+    it('should not dispatch if syncValidOnly is true', () => {
       const config: Partial<StoreFormSyncConfig> = {
-        serialize: jasmine.createSpy('serialize'),
         syncValidOnly: true
       };
       directive = new StoreFormSyncDirective(config, store);
@@ -299,14 +274,10 @@ describe('StoreFormSyncDirective', () => {
 
       expect(directive.formGroup.valid).toBeFalse();
       expect(dispatchSpy).not.toHaveBeenCalled();
-      expect(config.serialize).not.toHaveBeenCalled();
     });
 
-    it('should serialize and dispatch', () => {
-      const config: Partial<StoreFormSyncConfig> = {
-        serialize: jasmine.createSpy('serialize').and.returnValue(JSON.stringify({ [firstNameField]: 'test' }))
-      };
-      directive = new StoreFormSyncDirective(config, store);
+    it('should dispatch', () => {
+      directive = new StoreFormSyncDirective({}, store);
       directive.storeFormSyncId = storeFormSyncId;
       directive.formGroup = formBuilder.group({
         [firstNameField]: 'test'
@@ -319,14 +290,10 @@ describe('StoreFormSyncDirective', () => {
       expect(dispatchSpy).toHaveBeenCalledWith(
         storeActions.patchForm({ storeFormSyncId, value: { [firstNameField]: 'test' } })
       );
-      expect(config.serialize).toHaveBeenCalledWith({ [firstNameField]: 'test' });
     });
 
-    it('should serialize and dispatch raw form value', () => {
+    it('should dispatch raw form value', () => {
       const config: Partial<StoreFormSyncConfig> = {
-        serialize: jasmine
-          .createSpy('serialize')
-          .and.returnValue(JSON.stringify({ [firstNameField]: 'foo', [lastNameField]: 'bar' })),
         syncRawValue: true
       };
       directive = new StoreFormSyncDirective(config, store);
@@ -345,7 +312,6 @@ describe('StoreFormSyncDirective', () => {
       expect(dispatchSpy).toHaveBeenCalledWith(
         storeActions.patchForm({ storeFormSyncId, value: { [firstNameField]: 'foo', [lastNameField]: 'bar' } })
       );
-      expect(config.serialize).toHaveBeenCalledWith({ [firstNameField]: 'foo', [lastNameField]: 'bar' });
     });
   });
 });

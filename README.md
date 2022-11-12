@@ -50,10 +50,10 @@ const config: Partial<StoreFormSyncConfig> = {
 export class AppModule {}
 ```
 
-2. Add the `storeFormSync` directive on the same element as `formGroup` and provide a `storeFormSyncId`
+2. Add a `storeFormSyncId` on the same element as `formGroup`
 
 ```html
-<form [formGroup]="myFormGroup" storeFormSync storeFormSyncId="1">
+<form [formGroup]="myFormGroup" storeFormSyncId="1">
   <div>
     <input formControlName="firstName" />
     <input formControlName="lastName" />
@@ -84,10 +84,6 @@ export interface StoreFormSyncConfig {
    */
   syncRawValue: boolean;
   /**
-   * Serialize function that gets called before dispatch
-   */
-  serialize: (formValue: any) => string;
-  /**
    * Deserialize function that gets called before patching the form.
    *
    * ISO Date objects which are stored as a string gets revived as Date object by default.
@@ -98,11 +94,10 @@ export interface StoreFormSyncConfig {
 
 ## StoreFormSync Directive API
 
-| Attribute               | Type      | Default   | Required | Description                                                  |
-| ----------------------- | --------- | --------- | -------- | ------------------------------------------------------------ |
-| `formGroup`             | FormGroup | undefined | yes      | The form group which needs to get synced to the @ngrx/store. |
-| `storeFormSyncId`       | string    | undefined | yes      | The unique ID for the form group.                            |
-| `storeFormSyncDisabled` | boolean   | false     | no       | Whether the form group value should sync to the @ngrx/store. |
+| Attribute               | Type             | Default   | Required | Description                                                  |
+| ----------------------- | ---------------- | --------- | -------- | ------------------------------------------------------------ |
+| `storeFormSyncId`       | string \| number | undefined | yes      | The unique ID for the form group.                            |
+| `storeFormSyncDisabled` | boolean          | false     | no       | Whether the form group value should sync to the @ngrx/store. |
 
 ## Override global config
 
@@ -116,7 +111,7 @@ import { STORE_FORM_SYNC_CONFIG } from '@larscom/ngrx-store-formsync';
   template: `<div>Hello!</div>`,
   providers: [{ provide: STORE_FORM_SYNC_CONFIG, useValue: { syncValidOnly: true } }]
 })
-export class Component {}
+export class AppComponent {}
 ```
 
 ## Managing form with actions and selectors
@@ -129,16 +124,16 @@ import { storeSelectors } from '@larscom/ngrx-store-formsync'; // import selecto
 import { Store, select } from '@ngrx/store';
 
 @Component({
-  selector: 'app-my-component',
+  selector: 'app-component',
   template: `
     <div>
       <h1>My Form Value</h1>
       {{ myFormValue$ | async | json }}
     </div>
   `,
-  styleUrls: ['my-component.component.scss']
+  styleUrls: ['app.component.scss']
 })
-export class MyComponent {
+export class AppComponent {
   myFormValue$ = this.store.pipe(select(storeSelectors.selectFormValue({ storeFormSyncId: 'myId' })));
 
   constructor(private readonly store: Store) {}
@@ -153,11 +148,11 @@ import { storeActions } from '@larscom/ngrx-store-formsync'; // import actions
 import { Store, select } from '@ngrx/store';
 
 @Component({
-  selector: 'app-my-component',
-  templateUrl: 'my-component.component.html'
-  styleUrls: ['my-component.component.scss']
+  selector: 'app-component',
+  templateUrl: 'app.component.html'
+  styleUrls: ['app.component.scss']
 })
-export class MyComponent {
+export class AppComponent {
   constructor(private readonly store: Store) {}
 
   setForm(): void {
@@ -178,11 +173,11 @@ import { storeActions } from '@larscom/ngrx-store-formsync'; // import actions
 import { Store, select } from '@ngrx/store';
 
 @Component({
-  selector: 'app-my-component',
-  templateUrl: 'my-component.component.html'
-  styleUrls: ['my-component.component.scss']
+  selector: 'app-component',
+  templateUrl: 'app.component.html'
+  styleUrls: ['app.component.scss']
 })
-export class MyComponent {
+export class AppComponent {
   constructor(private readonly store: Store) {}
 
   patchForm(): void {
@@ -204,11 +199,11 @@ import { storeActions } from '@larscom/ngrx-store-formsync'; // import actions
 import { Store, select } from '@ngrx/store';
 
 @Component({
-  selector: 'app-my-component',
-  templateUrl: 'my-component.component.html'
-  styleUrls: ['my-component.component.scss']
+  selector: 'app-component',
+  templateUrl: 'app.component.html'
+  styleUrls: ['app.component.scss']
 })
-export class MyComponent {
+export class AppComponent {
   constructor(private readonly store: Store) {}
 
   deleteForm(): void {
@@ -219,9 +214,9 @@ export class MyComponent {
 
 ## Persisting State
 
-This library works really well with [@larscom/ngrx-store-storagesync](https://github.com/larscom/ngrx-store-storagesync)
+This library works with [@larscom/ngrx-store-storagesync](https://github.com/larscom/ngrx-store-storagesync)
 
-You can persist the state of your forms to `localStorage` or `sessionStorage` in a few seconds.
+You can persist the state of your forms to `localStorage/sessionStorage` in a few seconds.
 
 ```ts
 import { storeFormSyncKey } from '@larscom/ngrx-store-formsync'; // import storeFormSyncKey
@@ -230,11 +225,10 @@ export function storageSyncReducer(reducer: ActionReducer<IRootState>): ActionRe
   const metaReducer = storageSync<IRootState>({
     features: [
       {
-        stateKey: storeFormSyncKey, // add storeFormSync as feature
-        deserialize: (featureState: string) => JSON.parse(featureState) // override the deserializer if you are gonna use `Date` objects
+        stateKey: storeFormSyncKey // add storeFormSync as feature
       }
     ],
-    storage: window.localStorage // persist to localStorage
+    storage: window.localStorage
   });
 
   return metaReducer(reducer);

@@ -13,7 +13,6 @@ const defaultConfig: StoreFormSyncConfig = {
   syncOnSubmit: false,
   syncRawValue: false,
   syncValidOnly: false,
-  serialize: (formValue: any): string => JSON.stringify(formValue),
   deserialize: (formValue: string): any => {
     return JSON.parse(formValue, (_: string, value: string) =>
       dateRegExp.test(String(value)) ? new Date(value) : value
@@ -22,12 +21,12 @@ const defaultConfig: StoreFormSyncConfig = {
 };
 
 @Directive({
-  selector: '[formGroup][storeFormSync]'
+  selector: '[formGroup][storeFormSyncId]'
 })
 export class StoreFormSyncDirective implements OnInit, OnDestroy {
   @Input() formGroup!: UntypedFormGroup;
 
-  @Input() storeFormSyncId!: string;
+  @Input() storeFormSyncId!: string | number;
   @Input() storeFormSyncDisabled: boolean = false;
 
   private readonly config = { ...defaultConfig, ...this.userConfig };
@@ -78,8 +77,7 @@ export class StoreFormSyncDirective implements OnInit, OnDestroy {
 
   private dispatch(syncRawValue: boolean): void {
     const { storeFormSyncId, formGroup } = this;
-    const formValue = syncRawValue ? formGroup.getRawValue() : formGroup.value;
-    const value = JSON.parse(this.config.serialize(formValue));
+    const value = syncRawValue ? formGroup.getRawValue() : formGroup.value;
 
     this.store.dispatch(patchForm({ storeFormSyncId, value }));
   }

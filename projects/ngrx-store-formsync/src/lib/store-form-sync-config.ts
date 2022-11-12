@@ -15,10 +15,6 @@ export interface StoreFormSyncConfig {
    */
   syncRawValue: boolean;
   /**
-   * Serialize function that gets called before dispatch
-   */
-  serialize: (formValue: any) => string;
-  /**
    * Deserialize function that gets called before patching the form.
    *
    * ISO Date objects which are stored as a string gets revived as Date object by default.
