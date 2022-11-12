@@ -77,7 +77,8 @@ export class StoreFormSyncDirective implements OnInit, OnDestroy {
 
   private dispatch(syncRawValue: boolean): void {
     const { storeFormSyncId, formGroup } = this;
-    const value = syncRawValue ? formGroup.getRawValue() : formGroup.value;
+    const formValue = syncRawValue ? formGroup.getRawValue() : formGroup.value;
+    const value = formValue ? JSON.parse(JSON.stringify(formValue)) : formValue;
 
     this.store.dispatch(patchForm({ storeFormSyncId, value }));
   }
