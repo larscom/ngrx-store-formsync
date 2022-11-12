@@ -22,13 +22,13 @@ const defaultConfig: StoreFormSyncConfig = {
 };
 
 @Directive({
-  selector: '[storeFormSync]'
+  selector: '[formGroup][storeFormSync]'
 })
 export class StoreFormSyncDirective implements OnInit, OnDestroy {
   @Input() formGroup!: UntypedFormGroup;
 
   @Input() storeFormSyncId!: string;
-  @Input() storeFormSyncDisabled!: boolean;
+  @Input() storeFormSyncDisabled: boolean = false;
 
   private readonly config = { ...defaultConfig, ...this.userConfig };
   private readonly onDestroy = new Subject<void>();
@@ -68,10 +68,12 @@ export class StoreFormSyncDirective implements OnInit, OnDestroy {
 
   @HostListener('submit')
   onSubmit(): void {
-    if (this.skipDispatchOnSubmit()) {
-      return;
-    }
-    this.dispatch(this.config.syncRawValue);
+    if (this.dispatchOnSubmit()) this.dispatch(this.config.syncRawValue);
+  }
+
+  private validateInputs(): void {
+    if (!this.formGroup) throw new Error('[@larscom/ngrx-store-formsync] You must provide a FormGroup');
+    if (!this.storeFormSyncId) throw new Error('[@larscom/ngrx-store-formsync] You must provide a storeFormSyncId');
   }
 
   private dispatch(syncRawValue: boolean): void {
@@ -82,18 +84,18 @@ export class StoreFormSyncDirective implements OnInit, OnDestroy {
     this.store.dispatch(patchForm({ storeFormSyncId, value }));
   }
 
-  private skipDispatchOnSubmit(): boolean {
+  private dispatchOnSubmit(): boolean {
     const { storeFormSyncDisabled, formGroup, config } = this;
 
     if (storeFormSyncDisabled) {
-      return true;
+      return false;
     }
 
     if (config.syncValidOnly) {
-      return !formGroup.valid;
+      return formGroup.valid;
     }
 
-    return false;
+    return true;
   }
 
   private dispatchWhenValueChanges(): boolean {
@@ -112,10 +114,5 @@ export class StoreFormSyncDirective implements OnInit, OnDestroy {
     }
 
     return true;
-  }
-
-  private validateInputs(): void {
-    if (!this.formGroup) throw new Error('[@larscom/ngrx-store-formsync] FormGroup is undefined');
-    if (!this.storeFormSyncId) throw new Error('[@larscom/ngrx-store-formsync] You must provide a storeFormSyncId');
   }
 }
