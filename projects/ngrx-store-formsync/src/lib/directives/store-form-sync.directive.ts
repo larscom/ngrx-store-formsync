@@ -2,22 +2,16 @@ import { Directive, HostListener, Inject, Input, OnDestroy, OnInit } from '@angu
 import { UntypedFormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 import { StoreFormSyncConfig } from '../store-form-sync-config';
 import { patchForm } from '../store/form.actions';
 import * as formSelectors from '../store/form.selectors';
 import { STORE_FORM_SYNC_CONFIG } from '../tokens/config';
 
-const dateRegExp = /(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/;
 const defaultConfig: StoreFormSyncConfig = {
   syncOnSubmit: false,
   syncRawValue: false,
-  syncValidOnly: false,
-  deserialize: (formValue: string): any => {
-    return JSON.parse(formValue, (_: string, value: string) =>
-      dateRegExp.test(String(value)) ? new Date(value) : value
-    );
-  }
+  syncValidOnly: false
 };
 
 @Directive({
@@ -54,8 +48,7 @@ export class StoreFormSyncDirective implements OnInit, OnDestroy {
         takeUntil(this.onDestroy),
         filter(() => !this.storeFormSyncDisabled),
         select(formSelectors.selectFormValue({ storeFormSyncId })),
-        filter((value) => value != null),
-        map((value) => config.deserialize(JSON.stringify(value)))
+        filter((value) => value != null)
       )
       .subscribe((value) => formGroup.patchValue(value, { emitEvent: false }));
   }
@@ -77,8 +70,7 @@ export class StoreFormSyncDirective implements OnInit, OnDestroy {
 
   private dispatch(syncRawValue: boolean): void {
     const { storeFormSyncId, formGroup } = this;
-    const formValue = syncRawValue ? formGroup.getRawValue() : formGroup.value;
-    const value = formValue ? JSON.parse(JSON.stringify(formValue)) : formValue;
+    const value = syncRawValue ? formGroup.getRawValue() : formGroup.value;
 
     this.store.dispatch(patchForm({ storeFormSyncId, value }));
   }

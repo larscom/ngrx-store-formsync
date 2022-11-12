@@ -5,7 +5,7 @@ import { IRootState } from './models/root-state';
 
 export function storageSyncReducer(reducer: ActionReducer<IRootState>): ActionReducer<IRootState> {
   const metaReducer = storageSync<IRootState>({
-    features: [{ stateKey: storeFormSyncKey, deserialize: (featureState) => JSON.parse(featureState) }],
+    features: [{ stateKey: storeFormSyncKey }],
     storage: window.localStorage
   });
 

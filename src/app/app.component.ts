@@ -12,7 +12,6 @@ import { IRootState } from './store/models/root-state';
 
       <form [formGroup]="form" [storeFormSyncId]="storeFormSyncId">
         <input type="text" formControlName="lessoncode" />
-        <input type="text" formControlName="date" />
         <input type="text" formControlName="countrycode" />
         <input type="text" formControlName="languagecode" />
         <div formArrayName="tasks">
@@ -116,7 +115,6 @@ export class AppComponent implements OnInit {
       lessoncode: 'TMM',
       countrycode: 'CA',
       languagecode: 'en',
-      date: new Date(),
       tasks: this.builder.array(this.getTasks())
     });
 

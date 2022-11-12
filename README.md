@@ -83,12 +83,6 @@ export interface StoreFormSyncConfig {
    * @default false
    */
   syncRawValue: boolean;
-  /**
-   * Deserialize function that gets called before patching the form.
-   *
-   * ISO Date objects which are stored as a string gets revived as Date object by default.
-   */
-  deserialize: (formValue: string) => any;
 }
 ```
 

@@ -175,26 +175,21 @@ describe('StoreFormSyncDirective', () => {
   });
 
   describe('When the store is updated', () => {
-    it('should not deserialize/dispatch after directive is destroyed', () => {
+    it('should not dispatch after directive is destroyed', () => {
       const formGroupSpy = jasmine.createSpyObj('FormGroup', ['patchValue'], {
         valueChanges: of()
       });
-      const deserializeSpy = jasmine.createSpy('deserialize');
-      const config: Partial<StoreFormSyncConfig> = {
-        deserialize: deserializeSpy
-      };
-      directive = new StoreFormSyncDirective(config, store);
+
+      directive = new StoreFormSyncDirective({}, store);
       directive.storeFormSyncId = storeFormSyncId;
       directive.formGroup = formGroupSpy;
 
       // initialize
       directive.ngOnInit();
 
-      expect(deserializeSpy).toHaveBeenCalled();
       expect(formGroupSpy.patchValue).toHaveBeenCalled();
 
       formGroupSpy.patchValue.calls.reset();
-      deserializeSpy.calls.reset();
 
       // destroy
       directive.ngOnDestroy();
@@ -202,15 +197,11 @@ describe('StoreFormSyncDirective', () => {
       store.setState(initialState);
 
       expect(formGroupSpy.patchValue).not.toHaveBeenCalled();
-      expect(deserializeSpy).not.toHaveBeenCalled();
     });
 
-    it('should not deserialize/dispatch when storeFormSyncDisabled is true', () => {
+    it('should not dispatch when storeFormSyncDisabled is true', () => {
       const formGroupSpy = jasmine.createSpyObj('FormGroup', ['patchValue'], { valueChanges: of() });
-      const config: Partial<StoreFormSyncConfig> = {
-        deserialize: jasmine.createSpy('deserialize')
-      };
-      directive = new StoreFormSyncDirective(config, store);
+      directive = new StoreFormSyncDirective({}, store);
       directive.storeFormSyncId = storeFormSyncId;
       directive.formGroup = formGroupSpy;
 
@@ -221,23 +212,21 @@ describe('StoreFormSyncDirective', () => {
       directive.ngOnInit();
 
       expect(formGroupSpy.patchValue).not.toHaveBeenCalled();
-      expect(config.deserialize).not.toHaveBeenCalled();
     });
 
-    it('should deserialize and patch formGroup', () => {
+    it('should patch formGroup', () => {
       const formGroupSpy = jasmine.createSpyObj('FormGroup', ['patchValue'], { valueChanges: of() });
-      const config: Partial<StoreFormSyncConfig> = {
-        deserialize: jasmine.createSpy('deserialize').and.returnValue({ [firstNameField]: 'test' })
-      };
-      directive = new StoreFormSyncDirective(config, store);
+      directive = new StoreFormSyncDirective({}, store);
       directive.storeFormSyncId = storeFormSyncId;
       directive.formGroup = formGroupSpy;
 
       // initialize
       directive.ngOnInit();
 
-      expect(formGroupSpy.patchValue).toHaveBeenCalledWith({ [firstNameField]: 'test' }, { emitEvent: false });
-      expect(config.deserialize).toHaveBeenCalledWith('{"firstName":"foo","lastName":"bar"}');
+      expect(formGroupSpy.patchValue).toHaveBeenCalledWith(
+        { [firstNameField]: 'foo', [lastNameField]: 'bar' },
+        { emitEvent: false }
+      );
     });
   });
 
