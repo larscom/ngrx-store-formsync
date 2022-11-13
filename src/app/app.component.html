@@ -8,8 +8,7 @@
       [syncDisabled]="(formGroup.get('syncDisabled')?.value)!"
       [syncOnSubmit]="(formGroup.get('syncOnSubmit')?.value)!"
       [syncRawValue]="(formGroup.get('syncRawValue')?.value)!"
-      [syncValidOnly]="(formGroup.get('syncValidOnly')?.value)!"
-      [syncInitialValue]="(formGroup.get('syncInitialValue')?.value)!">
+      [syncValidOnly]="(formGroup.get('syncValidOnly')?.value)!">
 
       <div>
         <input
@@ -28,14 +27,6 @@
       </div>
 
       <div class="flex flex-col">
-        <div class="flex items-center mb-2">
-          <input
-            class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-            formControlName="syncDisabled"
-            type="checkbox">
-          <label for="default-checkbox"
-            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Disable sync</label>
-        </div>
         <div class="flex items-center mb-2">
           <input
             class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
@@ -63,10 +54,10 @@
         <div class="flex items-center mb-2">
           <input
             class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-            formControlName="syncInitialValue"
+            formControlName="syncDisabled"
             type="checkbox">
           <label for="default-checkbox"
-            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Sync initial value</label>
+            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Disable sync</label>
         </div>
       </div>
 
@@ -81,8 +72,13 @@
 
     </form>
 
-    <div>
-      <pre [innerText]="store$ | async | json"></pre>
+    <pre [innerText]="store$ | async | json"></pre>
+
+    <div class="flex justify-center">
+      <a class="text-blue-600 underline"
+        href="https://github.com/larscom/ngrx-store-formsync"
+        target="_blank"
+        rel="noopener noreferrer">Source Code &hearts; Github</a>
     </div>
   </div>
 </div>

@@ -19,8 +19,7 @@ export class AppComponent {
     syncDisabled: false,
     syncOnSubmit: false,
     syncRawValue: false,
-    syncValidOnly: false,
-    syncInitialValue: true
+    syncValidOnly: false
   });
   readonly initialValue = this.formGroup.value;
   readonly storeFormSyncId = 'cb0f1727-29cb-44f8-b870-a804a9796ce8';
