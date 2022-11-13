@@ -298,6 +298,21 @@ describe('StoreFormSyncDirective', () => {
       );
     });
 
+    it('should not dispatch if syncOnSubmit is false', () => {
+      directive = new StoreFormSyncDirective(store);
+      directive.storeFormSyncId = storeFormSyncId;
+      directive.formGroup = formBuilder.group({
+        [firstNameField]: 'test'
+      });
+
+      directive.syncOnSubmit = false;
+
+      directive.onSubmit();
+
+      expect(directive.formGroup.valid).toBeTrue();
+      expect(dispatchSpy).not.toHaveBeenCalled();
+    });
+
     it('should dispatch raw form value if syncRawValue is true', () => {
       directive = new StoreFormSyncDirective(store);
       directive.storeFormSyncId = storeFormSyncId;

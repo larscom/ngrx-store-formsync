@@ -1,5 +1,5 @@
-import { storeActions, StoreFormSyncState } from '../../public-api';
-import { initialState, storeFormSyncReducer } from './form.reducer';
+import * as storeActions from '../store/form.actions';
+import { initialState, storeFormSyncReducer, StoreFormSyncState } from './form.reducer';
 
 describe('StoreFormSyncReducer', () => {
   it('should return the initial state', () => {
@@ -83,7 +83,7 @@ describe('StoreFormSyncReducer', () => {
     expect(updatedState).toEqual(expected);
   });
 
-  it('should DELETE (set to undefined) form value for storeFormSyncId', () => {
+  it('should DELETE form value for storeFormSyncId', () => {
     const storeFormSyncId = '1';
     const state: StoreFormSyncState = {
       extra: {
@@ -106,5 +106,22 @@ describe('StoreFormSyncReducer', () => {
     };
 
     expect(updatedState).toEqual(expected);
+  });
+
+  it('should DELETE all form values', () => {
+    const state: StoreFormSyncState = {
+      '1': {
+        field: 'value'
+      },
+      '2': {
+        field1: 'value',
+        field2: 'value',
+        array: ['1', '2', '3']
+      }
+    };
+
+    const updatedState = storeFormSyncReducer(state, storeActions.deleteAll());
+
+    expect(updatedState).toEqual({});
   });
 });

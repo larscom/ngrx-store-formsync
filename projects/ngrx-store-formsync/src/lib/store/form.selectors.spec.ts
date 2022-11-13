@@ -1,4 +1,6 @@
-import { storeFormSyncKey, StoreFormSyncState, storeSelectors } from '../../public-api';
+import * as storeSelectors from '../store/form.selectors';
+import { storeFormSyncKey } from './form.constants';
+import { StoreFormSyncState } from './form.reducer';
 
 interface RootState {
   [storeFormSyncKey]: StoreFormSyncState;
@@ -8,6 +10,9 @@ describe('StoreSelectors', () => {
   const root: RootState = {
     [storeFormSyncKey]: {
       '1': {
+        field: 'value'
+      },
+      '2': {
         field: 'value'
       }
     }
