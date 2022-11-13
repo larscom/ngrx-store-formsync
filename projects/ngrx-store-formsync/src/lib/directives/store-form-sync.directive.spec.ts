@@ -65,6 +65,10 @@ describe('StoreFormSyncDirective', () => {
       // initialize
       directive.ngOnInit();
 
+      expect(dispatchSpy).toHaveBeenCalled();
+
+      dispatchSpy.calls.reset();
+
       // destroy
       directive.ngOnDestroy();
 
@@ -124,6 +128,10 @@ describe('StoreFormSyncDirective', () => {
 
       // initialize
       directive.ngOnInit();
+
+      expect(dispatchSpy).toHaveBeenCalled();
+
+      dispatchSpy.calls.reset();
 
       directive.formGroup.get(firstNameField)!.setValue('t');
 

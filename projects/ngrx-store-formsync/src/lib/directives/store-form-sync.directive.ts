@@ -2,7 +2,7 @@ import { Directive, HostListener, Inject, Input, OnDestroy, OnInit } from '@angu
 import { UntypedFormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, startWith, takeUntil } from 'rxjs/operators';
 import { StoreFormSyncConfig } from '../store-form-sync-config';
 import { patchForm } from '../store/form.actions';
 import * as formSelectors from '../store/form.selectors';
@@ -38,6 +38,7 @@ export class StoreFormSyncDirective implements OnInit, OnDestroy {
 
     formGroup.valueChanges
       .pipe(
+        startWith(this.formGroup.value),
         takeUntil(this.onDestroy),
         filter(() => this.dispatchWhenValueChanges())
       )
