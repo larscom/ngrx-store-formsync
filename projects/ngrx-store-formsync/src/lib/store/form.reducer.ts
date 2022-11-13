@@ -20,5 +20,6 @@ export const storeFormSyncReducer = createReducer(
       }
     };
   }),
-  on(formActions.deleteForm, (state, { storeFormSyncId }) => ({ ...state, [storeFormSyncId]: undefined }))
+  on(formActions.deleteForm, (state, { storeFormSyncId }) => ({ ...state, [storeFormSyncId]: undefined })),
+  on(formActions.deleteAll, () => initialState)
 );

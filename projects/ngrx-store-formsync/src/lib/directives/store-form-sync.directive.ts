@@ -1,67 +1,64 @@
-import { Directive, HostListener, Inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Directive, HostListener, Input, OnChanges, OnDestroy } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
-import { Subject } from 'rxjs';
+import { identity, Subject } from 'rxjs';
 import { filter, startWith, takeUntil } from 'rxjs/operators';
-import { StoreFormSyncConfig } from '../store-form-sync-config';
 import { patchForm } from '../store/form.actions';
 import * as formSelectors from '../store/form.selectors';
-import { STORE_FORM_SYNC_CONFIG } from '../tokens/config';
-
-const defaultConfig: StoreFormSyncConfig = {
-  syncOnSubmit: false,
-  syncRawValue: false,
-  syncValidOnly: false
-};
 
 @Directive({
   selector: '[formGroup][storeFormSyncId]'
 })
-export class StoreFormSyncDirective implements OnInit, OnDestroy {
+export class StoreFormSyncDirective implements OnDestroy, OnChanges {
   @Input() formGroup!: UntypedFormGroup;
-
   @Input() storeFormSyncId!: string | number;
-  @Input() storeFormSyncDisabled: boolean = false;
 
-  private readonly config = { ...defaultConfig, ...this.userConfig };
-  private readonly onDestroy = new Subject<void>();
+  @Input() syncDisabled: boolean = false;
+  @Input() syncOnSubmit: boolean = false;
+  @Input() syncRawValue: boolean = false;
+  @Input() syncValidOnly: boolean = false;
 
-  constructor(
-    @Inject(STORE_FORM_SYNC_CONFIG) private readonly userConfig: Partial<StoreFormSyncConfig>,
-    private readonly store: Store
-  ) {}
+  @Input() syncInitialValue: boolean = true;
 
-  ngOnInit(): void {
+  constructor(private readonly store: Store) {}
+
+  private readonly notifier = new Subject<void>();
+
+  ngOnChanges(): void {
     this.validateInputs();
 
-    const { config, storeFormSyncId, formGroup, store } = this;
+    this.notifier.next();
 
-    formGroup.valueChanges
+    const { storeFormSyncId, syncInitialValue, syncRawValue } = this;
+
+    const startWithFn = syncInitialValue ? startWith(this.formGroup.value) : identity;
+
+    this.formGroup.valueChanges
       .pipe(
-        startWith(this.formGroup.value),
-        takeUntil(this.onDestroy),
+        startWithFn,
+        takeUntil(this.notifier),
         filter(() => this.dispatchWhenValueChanges())
       )
-      .subscribe(() => this.dispatch(config.syncRawValue));
+      .subscribe(() => this.dispatch(syncRawValue));
 
-    store
+    this.store
       .pipe(
-        takeUntil(this.onDestroy),
-        filter(() => !this.storeFormSyncDisabled),
+        takeUntil(this.notifier),
+        filter(() => !this.syncDisabled),
         select(formSelectors.selectFormValue({ storeFormSyncId })),
         filter((value) => value != null)
       )
-      .subscribe((value) => formGroup.patchValue(value, { emitEvent: false }));
+      .subscribe((value) => this.formGroup.patchValue(value, { emitEvent: false }));
   }
 
   ngOnDestroy(): void {
-    this.onDestroy.next();
-    this.onDestroy.complete();
+    this.notifier.next();
+    this.notifier.complete();
   }
 
   @HostListener('submit')
   onSubmit(): void {
-    if (this.dispatchOnSubmit()) this.dispatch(this.config.syncRawValue);
+    if (this.dispatchOnSubmit()) this.dispatch(this.syncRawValue);
   }
 
   private validateInputs(): void {
@@ -77,13 +74,17 @@ export class StoreFormSyncDirective implements OnInit, OnDestroy {
   }
 
   private dispatchOnSubmit(): boolean {
-    const { storeFormSyncDisabled, formGroup, config } = this;
+    const { syncOnSubmit, syncDisabled, formGroup, syncValidOnly } = this;
 
-    if (storeFormSyncDisabled) {
+    if (!syncOnSubmit) {
       return false;
     }
 
-    if (config.syncValidOnly) {
+    if (syncDisabled) {
+      return false;
+    }
+
+    if (syncValidOnly) {
       return formGroup.valid;
     }
 
@@ -91,17 +92,17 @@ export class StoreFormSyncDirective implements OnInit, OnDestroy {
   }
 
   private dispatchWhenValueChanges(): boolean {
-    const { storeFormSyncDisabled, formGroup, config } = this;
+    const { syncDisabled, formGroup, syncOnSubmit, syncValidOnly } = this;
 
-    if (storeFormSyncDisabled) {
+    if (syncDisabled) {
       return false;
     }
 
-    if (config.syncOnSubmit) {
+    if (syncOnSubmit) {
       return false;
     }
 
-    if (config.syncValidOnly) {
+    if (syncValidOnly) {
       return formGroup.valid;
     }
 
