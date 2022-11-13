@@ -64,7 +64,7 @@ Your formGroup will now get synced to the `@ngrx/store`
 
 | Attribute          | Type             | Default   | Required | Description                                                                                                                                  |
 | ------------------ | ---------------- | --------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `formGroup`        | UnTypedFormGroup | undefined | yes      | The form group which needs to get synced to the store.                                                                                       |
+| `formGroup`        | UntypedFormGroup | undefined | yes      | The form group which needs to get synced to the store.                                                                                       |
 | `storeFormSyncId`  | string \| number | undefined | yes      | The unique ID for the form group.                                                                                                            |
 | `syncDisabled`     | boolean          | false     | no       | Whether the form group value should sync to the store.                                                                                       |
 | `syncOnSubmit`     | boolean          | false     | no       | Only sync to the store when submitting the form.                                                                                             |
