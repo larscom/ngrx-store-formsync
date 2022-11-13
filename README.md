@@ -5,15 +5,18 @@
 [![license](https://img.shields.io/npm/l/@larscom/ngrx-store-formsync.svg)](https://github.com/larscom/ngrx-store-formsync/blob/master/LICENSE)
 [![codecov](https://codecov.io/gh/larscom/ngrx-store-formsync/branch/master/graph/badge.svg?token=KDMA88UI7L)](https://codecov.io/gh/larscom/ngrx-store-formsync)
 
-[![master](https://github.com/larscom/ngrx-store-formsync/actions/workflows/master-build.yml/badge.svg?branch=master)](https://github.com/larscom/ngrx-store-formsync/actions/workflows/master-build.yml)
-[![codeQL](https://github.com/larscom/ngrx-store-formsync/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/larscom/ngrx-store-formsync/actions/workflows/codeql-analysis.yml)
+[![CodeQL](https://github.com/larscom/ngrx-store-formsync/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/larscom/ngrx-store-formsync/actions/workflows/codeql-analysis.yml)
+[![firebase-hosting](https://github.com/larscom/ngrx-store-formsync/actions/workflows/firebase-hosting-merge.yml/badge.svg?branch=master)](https://github.com/larscom/ngrx-store-formsync/actions/workflows/firebase-hosting-merge.yml)
+
 
 > Synchronize any **reactive form** to **@ngrx/store** (Angular)
 
-## Supports
+### ✨ [Live Demo](https://ngrx-store-formsync.web.app)
 
-- &#10003; Reactive Forms only
-- &#10003; [Persisting State](#Persisting-State) (needs additional library)
+## Features
+
+- &#10003; Sync Reactive Forms only
+- &#10003; [Persist State](#Persisting-State) (needs additional library)
 
 ## Dependencies
 
@@ -22,35 +25,28 @@
 ## Installation
 
 ```bash
-npm i --save @larscom/ngrx-store-formsync
+npm install @larscom/ngrx-store-formsync
 ```
 
 ## Usage
 
-1. Import `StoreFormSyncModule.forRoot()` once inside a root module. For every other module, just use `StoreFormSyncModule`
+1. Import `StoreFormSyncModule.forRoot()` only once. For additional modules import `StoreFormSyncModule`
 
 ```ts
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 import { StoreModule } from '@ngrx/store';
-import { StoreFormSyncModule, StoreFormSyncConfig } from '@larscom/ngrx-store-formsync';
-
-const config: Partial<StoreFormSyncConfig> = {
-  syncValidOnly: true
-};
+import { StoreFormSyncModule } from '@larscom/ngrx-store-formsync';
 
 @NgModule({
   imports: [
-    BrowserModule,
     StoreModule.forRoot(),
-    // import StoreFormSyncModule.forRoot() only once
-    StoreFormSyncModule.forRoot(config)
+    StoreFormSyncModule.forRoot() // import StoreFormSyncModule.forRoot()
   ]
 })
 export class AppModule {}
 ```
 
-2. Add a `storeFormSyncId` on the same element as `formGroup`
+2. Add the `storeFormSyncId` attribute to the same element as `formGroup`
 
 ```html
 <form [formGroup]="myFormGroup" storeFormSyncId="1">
@@ -64,53 +60,21 @@ export class AppModule {}
 
 Your formGroup will now get synced to the `@ngrx/store`
 
-## Configuration
-
-```ts
-export interface StoreFormSyncConfig {
-  /**
-   * Only sync to the store when submitting the form.
-   * @default false
-   */
-  syncOnSubmit: boolean;
-  /**
-   * Only sync to the store when the form status is valid.
-   * @default false
-   */
-  syncValidOnly: boolean;
-  /**
-   * Sync the raw form value to the store (this will include disabled form controls)
-   * @default false
-   */
-  syncRawValue: boolean;
-}
-```
-
 ## StoreFormSync Directive API
 
-| Attribute               | Type             | Default   | Required | Description                                                  |
-| ----------------------- | ---------------- | --------- | -------- | ------------------------------------------------------------ |
-| `storeFormSyncId`       | string \| number | undefined | yes      | The unique ID for the form group.                            |
-| `storeFormSyncDisabled` | boolean          | false     | no       | Whether the form group value should sync to the @ngrx/store. |
-
-## Override global config
-
-Config can be overriden at component level by adding a provider to the providers array.
-
-```ts
-import { STORE_FORM_SYNC_CONFIG } from '@larscom/ngrx-store-formsync';
-
-@Component({
-  selector: 'app-component',
-  template: `<div>Hello!</div>`,
-  providers: [{ provide: STORE_FORM_SYNC_CONFIG, useValue: { syncValidOnly: true } }]
-})
-export class AppComponent {}
-```
+| Attribute          | Type             | Default   | Required | Description                                                                                                                                  |
+| ------------------ | ---------------- | --------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `formGroup`        | UnTypedFormGroup | undefined | yes      | The form group which needs to get synced to the store.                                                                                       |
+| `storeFormSyncId`  | string \| number | undefined | yes      | The unique ID for the form group.                                                                                                            |
+| `syncDisabled`     | boolean          | false     | no       | Whether the form group value should sync to the store.                                                                                       |
+| `syncOnSubmit`     | boolean          | false     | no       | Only sync to the store when submitting the form.                                                                                             |
+| `syncRawValue`     | boolean          | false     | no       | Sync the raw form value to the store (this will include disabled form controls)                                                              |
+| `syncValidOnly`    | boolean          | false     | no       | Only sync to the store when the form status is valid.                                                                                        |
+| `syncInitialValue` | boolean          | true      | no       | Whether the form group value should sync to store when the directive is alive. When disabled, syncing will start when the form value changes |
 
 ## Managing form with actions and selectors
 
-### Get Form Value
+### Get form value
 
 ```ts
 import { Component } from '@angular/core';
@@ -134,7 +98,7 @@ export class AppComponent {
 }
 ```
 
-### Set Form Value
+### Set form value
 
 ```ts
 import { Component } from '@angular/core';
@@ -159,7 +123,7 @@ export class AppComponent {
 }
 ```
 
-### Patch Form Value
+### Patch form value
 
 ```ts
 import { Component } from '@angular/core';
@@ -185,7 +149,7 @@ export class AppComponent {
 }
 ```
 
-### Delete Form Value
+### Delete form value
 
 ```ts
 import { Component } from '@angular/core';
@@ -206,9 +170,30 @@ export class AppComponent {
 }
 ```
 
+### Delete all form values
+
+```ts
+import { Component } from '@angular/core';
+import { storeActions } from '@larscom/ngrx-store-formsync'; // import actions
+import { Store, select } from '@ngrx/store';
+
+@Component({
+  selector: 'app-component',
+  templateUrl: 'app.component.html'
+  styleUrls: ['app.component.scss']
+})
+export class AppComponent {
+  constructor(private readonly store: Store) {}
+
+  deleteAll(): void {
+    this.store.dispatch(storeActions.deleteAll());
+  }
+}
+```
+
 ## Persisting State
 
-This library works with [@larscom/ngrx-store-storagesync](https://github.com/larscom/ngrx-store-storagesync)
+This library works well with [@larscom/ngrx-store-storagesync](https://github.com/larscom/ngrx-store-storagesync)
 
 You can persist the state of your forms to `localStorage/sessionStorage` in a few seconds.
 
