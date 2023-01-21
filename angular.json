@@ -104,9 +104,10 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/ngrx-store-formsync/src/test.ts",
+            "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "projects/ngrx-store-formsync/tsconfig.spec.json",
-            "karmaConfig": "projects/ngrx-store-formsync/karma.conf.js"
+            "karmaConfig": "projects/ngrx-store-formsync/karma.conf.js",
+            "inlineStyleLanguage": "scss"
           }
         }
       }
