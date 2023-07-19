@@ -1,5 +1,5 @@
 import { UntypedFormBuilder, Validators } from '@angular/forms';
-import { getMockStore, MockStore } from '@ngrx/store/testing';
+import { MockStore, createMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import * as storeActions from '../store/form.actions';
 import { storeFormSyncKey } from '../store/form.constants';
@@ -27,7 +27,7 @@ describe('StoreFormSyncDirective', () => {
 
   beforeEach(() => {
     formBuilder = new UntypedFormBuilder();
-    store = getMockStore({ initialState });
+    store = createMockStore({ initialState });
     dispatchSpy = spyOn(store, 'dispatch');
   });
 
