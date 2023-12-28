@@ -1,9 +1,9 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
-import { StoreModule } from '@ngrx/store';
-import { StoreFormSyncDirective } from './directives/store-form-sync.directive';
-import { storeFormSyncKey } from './store/form.constants';
-import { storeFormSyncReducer } from './store/form.reducer';
-import { storeFormSyncReducerToken } from './tokens/reducer';
+import { ModuleWithProviders, NgModule } from '@angular/core'
+import { StoreModule } from '@ngrx/store'
+import { StoreFormSyncDirective } from './directives/store-form-sync.directive'
+import { storeFormSyncKey } from './store/form.constants'
+import { storeFormSyncReducer } from './store/form.reducer'
+import { storeFormSyncReducerToken } from './tokens/reducer'
 
 @NgModule({
   declarations: [StoreFormSyncDirective],
@@ -20,6 +20,6 @@ export class StoreFormSyncModule {
           useValue: storeFormSyncReducer
         }
       ]
-    };
+    }
   }
 }

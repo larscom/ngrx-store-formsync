@@ -15,12 +15,12 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist",
+            "outputPath": "dist/ngrx-store-formsync-app",
             "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
+            "browser": "src/main.ts",
+            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": ["src/favicon.ico", "src/assets"],
@@ -41,21 +41,12 @@
                   "maximumError": "4kb"
                 }
               ],
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
               "outputHashing": "all"
             },
             "development": {
-              "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
               "extractLicenses": false,
-              "sourceMap": true,
-              "namedChunks": true
+              "sourceMap": true
             }
           },
           "defaultConfiguration": "production"
@@ -64,10 +55,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "ngrx-store-formsync-app:build:production"
+              "buildTarget": "ngrx-store-formsync-app:build:production"
             },
             "development": {
-              "browserTarget": "ngrx-store-formsync-app:build:development"
+              "buildTarget": "ngrx-store-formsync-app:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -75,7 +66,16 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ngrx-store-formsync-app:build"
+            "buildTarget": "ngrx-store-formsync-app:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-builders/jest:run",
+          "options": {
+            "tsConfig": "tsconfig.spec.json",
+            "polyfills": ["zone.js", "zone.js/testing"],
+            "include": ["src/**/*.spec.ts"],
+            "coverage": true
           }
         }
       }
@@ -84,7 +84,7 @@
       "projectType": "library",
       "root": "projects/ngrx-store-formsync",
       "sourceRoot": "projects/ngrx-store-formsync/src",
-      "prefix": "qrcode",
+      "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
@@ -102,12 +102,12 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-builders/jest:run",
           "options": {
+            "tsConfig": "tsconfig.spec.json",
             "polyfills": ["zone.js", "zone.js/testing"],
-            "tsConfig": "projects/ngrx-store-formsync/tsconfig.spec.json",
-            "karmaConfig": "projects/ngrx-store-formsync/karma.conf.js",
-            "inlineStyleLanguage": "scss"
+            "include": ["src/**/*.spec.ts"],
+            "coverage": true
           }
         }
       }

@@ -5,13 +5,7 @@
 [![license](https://img.shields.io/npm/l/@larscom/ngrx-store-formsync.svg)](https://github.com/larscom/ngrx-store-formsync/blob/master/LICENSE)
 [![codecov](https://codecov.io/gh/larscom/ngrx-store-formsync/branch/master/graph/badge.svg?token=KDMA88UI7L)](https://codecov.io/gh/larscom/ngrx-store-formsync)
 
-[![CodeQL](https://github.com/larscom/ngrx-store-formsync/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/larscom/ngrx-store-formsync/actions/workflows/codeql-analysis.yml)
-[![firebase-hosting](https://github.com/larscom/ngrx-store-formsync/actions/workflows/firebase-hosting-merge.yml/badge.svg?branch=master)](https://github.com/larscom/ngrx-store-formsync/actions/workflows/firebase-hosting-merge.yml)
-
-
 > Synchronize any **reactive form** to **@ngrx/store** (Angular)
-
-### ✨ [Live Demo](https://ngrx-store-formsync.web.app)
 
 ## Features
 

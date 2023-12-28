@@ -1,9 +1,9 @@
-import { createReducer, on } from '@ngrx/store';
-import * as formActions from './form.actions';
+import { createReducer, on } from '@ngrx/store'
+import * as formActions from './form.actions'
 
-export const initialState: StoreFormSyncState = {};
+export const initialState: StoreFormSyncState = {}
 export interface StoreFormSyncState {
-  [storeFormSyncId: string]: any;
+  [storeFormSyncId: string]: any
 }
 
 export const storeFormSyncReducer = createReducer(
@@ -18,8 +18,8 @@ export const storeFormSyncReducer = createReducer(
           ...value
         }
       }
-    };
+    }
   }),
   on(formActions.deleteForm, (state, { storeFormSyncId }) => ({ ...state, [storeFormSyncId]: undefined })),
   on(formActions.deleteAll, () => initialState)
-);
+)

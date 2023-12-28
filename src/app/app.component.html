@@ -1,21 +1,23 @@
 <div class="flex justify-center mt-10">
   <div class="flex flex-col gap-5 w-60">
-    <h1>@larscom/ngrx-store-formsync</h1>
+    <h1>&#64;larscom/ngrx-store-formsync</h1>
 
-    <form class="flex flex-col gap-3"
+    <form
+      class="flex flex-col gap-3"
       [formGroup]="formGroup"
       [storeFormSyncId]="storeFormSyncId"
-      [syncDisabled]="(formGroup.get('syncDisabled')?.value)!"
-      [syncOnSubmit]="(formGroup.get('syncOnSubmit')?.value)!"
-      [syncRawValue]="(formGroup.get('syncRawValue')?.value)!"
-      [syncValidOnly]="(formGroup.get('syncValidOnly')?.value)!">
-
+      [syncDisabled]="formGroup.get('syncDisabled')?.value!"
+      [syncOnSubmit]="formGroup.get('syncOnSubmit')?.value!"
+      [syncRawValue]="formGroup.get('syncRawValue')?.value!"
+      [syncValidOnly]="formGroup.get('syncValidOnly')?.value!"
+    >
       <div>
         <input
           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           formControlName="firstName"
           type="text"
-          placeholder="First Name">
+          placeholder="First Name"
+        />
       </div>
 
       <div>
@@ -23,7 +25,8 @@
           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           formControlName="lastName"
           type="text"
-          placeholder="Last Name">
+          placeholder="Last Name"
+        />
       </div>
 
       <div class="flex flex-col">
@@ -31,54 +34,50 @@
           <input
             class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             formControlName="syncOnSubmit"
-            type="checkbox">
-          <label for="default-checkbox"
-            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Sync on submit only</label>
+            type="checkbox"
+          />
+          <label for="default-checkbox" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+            >Sync on submit only</label
+          >
         </div>
         <div class="flex items-center mb-2">
           <input
             class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             formControlName="syncRawValue"
-            type="checkbox">
-          <label for="default-checkbox"
-            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Sync raw value</label>
+            type="checkbox"
+          />
+          <label for="default-checkbox" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+            >Sync raw value</label
+          >
         </div>
         <div class="flex items-center mb-2">
           <input
             class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             formControlName="syncValidOnly"
-            type="checkbox">
-          <label for="default-checkbox"
-            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Sync valid only</label>
+            type="checkbox"
+          />
+          <label for="default-checkbox" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+            >Sync valid only</label
+          >
         </div>
         <div class="flex items-center mb-2">
           <input
             class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             formControlName="syncDisabled"
-            type="checkbox">
-          <label for="default-checkbox"
-            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Disable sync</label>
+            type="checkbox"
+          />
+          <label for="default-checkbox" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+            >Disable sync</label
+          >
         </div>
       </div>
 
       <div class="flex justify-between">
-        <button class="btn btn-red"
-          type="button"
-          (click)="onReset()">Reset</button>
-        <button class="btn btn-blue"
-          type="submit"
-          (click)="onSubmit()">Submit</button>
+        <button class="btn btn-red" type="button" (click)="onReset()">Reset</button>
+        <button class="btn btn-blue" type="submit" (click)="onSubmit()">Submit</button>
       </div>
-
     </form>
 
     <pre [innerText]="store$ | async | json"></pre>
-
-    <div class="flex justify-center">
-      <a class="text-blue-600 underline"
-        href="https://github.com/larscom/ngrx-store-formsync"
-        target="_blank"
-        rel="noopener noreferrer">Source Code &hearts; Github</a>
-    </div>
   </div>
 </div>
