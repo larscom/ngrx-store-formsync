@@ -2,8 +2,7 @@
 
 [![npm-version](https://img.shields.io/npm/v/@larscom/ngrx-store-formsync.svg?label=npm)](https://www.npmjs.com/package/@larscom/ngrx-store-formsync)
 ![npm](https://img.shields.io/npm/dw/@larscom/ngrx-store-formsync)
-[![license](https://img.shields.io/npm/l/@larscom/ngrx-store-formsync.svg)](https://github.com/larscom/ngrx-store-formsync/blob/master/LICENSE)
-[![codecov](https://codecov.io/gh/larscom/ngrx-store-formsync/branch/master/graph/badge.svg?token=KDMA88UI7L)](https://codecov.io/gh/larscom/ngrx-store-formsync)
+[![license](https://img.shields.io/npm/l/@larscom/ngrx-store-formsync.svg)](https://github.com/larscom/ngrx-store-formsync/blob/main/LICENSE)
 
 > Synchronize any **reactive form** to **@ngrx/store** (Angular)
 
@@ -27,9 +26,9 @@ npm install @larscom/ngrx-store-formsync
 1. Import `StoreFormSyncModule.forRoot()` only once. For additional modules import `StoreFormSyncModule`
 
 ```ts
-import { NgModule } from '@angular/core';
-import { StoreModule } from '@ngrx/store';
-import { StoreFormSyncModule } from '@larscom/ngrx-store-formsync';
+import { NgModule } from '@angular/core'
+import { StoreModule } from '@ngrx/store'
+import { StoreFormSyncModule } from '@larscom/ngrx-store-formsync'
 
 @NgModule({
   imports: [
@@ -71,9 +70,9 @@ Your formGroup will now get synced to the `@ngrx/store`
 ### Get form value
 
 ```ts
-import { Component } from '@angular/core';
-import { storeSelectors } from '@larscom/ngrx-store-formsync'; // import selectors
-import { Store, select } from '@ngrx/store';
+import { Component } from '@angular/core'
+import { storeSelectors } from '@larscom/ngrx-store-formsync' // import selectors
+import { Store, select } from '@ngrx/store'
 
 @Component({
   selector: 'app-component',
@@ -86,7 +85,7 @@ import { Store, select } from '@ngrx/store';
   styleUrls: ['app.component.scss']
 })
 export class AppComponent {
-  myFormValue$ = this.store.pipe(select(storeSelectors.selectFormValue({ storeFormSyncId: 'myId' })));
+  myFormValue$ = this.store.pipe(select(storeSelectors.selectFormValue({ storeFormSyncId: 'myId' })))
 
   constructor(private readonly store: Store) {}
 }
@@ -192,7 +191,7 @@ This library works well with [@larscom/ngrx-store-storagesync](https://github.co
 You can persist the state of your forms to `localStorage/sessionStorage` in a few seconds.
 
 ```ts
-import { storeFormSyncKey } from '@larscom/ngrx-store-formsync'; // import storeFormSyncKey
+import { storeFormSyncKey } from '@larscom/ngrx-store-formsync' // import storeFormSyncKey
 
 export function storageSyncReducer(reducer: ActionReducer<IRootState>): ActionReducer<IRootState> {
   const metaReducer = storageSync<IRootState>({
@@ -202,9 +201,9 @@ export function storageSyncReducer(reducer: ActionReducer<IRootState>): ActionRe
       }
     ],
     storage: window.localStorage
-  });
+  })
 
-  return metaReducer(reducer);
+  return metaReducer(reducer)
 }
 ```
 
