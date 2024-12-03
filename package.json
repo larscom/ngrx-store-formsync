@@ -35,7 +35,7 @@
     "jest-preset-angular": "14.4.2",
     "ng-packagr": "19.0.1",
     "postcss": "8.4.49",
-    "tailwindcss": "3.4.15",
+    "tailwindcss": "3.4.16",
     "typescript": "5.7.2"
   }
 }
